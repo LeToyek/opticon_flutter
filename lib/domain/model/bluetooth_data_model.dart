@@ -1,22 +1,31 @@
-import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:flutter/services.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+class BluetoothDataModel {
+  // make a model that can recieved a data from the bluetooth as a hex string
 
-part 'bluetooth_data_model.freezed.dart';
-part 'bluetooth_data_model.g.dart';
+  const BluetoothDataModel({
+    String? battery,
+    String? blinkDuration,
+    String? blinkCount,
+    String? ppgValue,
+  });
+  factory BluetoothDataModel.fromHexData(Uint8List data) {
+    String hexData = String.fromCharCodes(data);
+    List<String> dataList =
+        hexData.split('\n').where((element) => element.isNotEmpty).toList();
 
-@freezed
-class BluetoothDataModel with _$BluetoothDataModel {
-  const factory BluetoothDataModel({
-    @JsonKey(name: 'ppg_val') String? ppgVal,
-    @JsonKey(name: 'blink_count') String? blinkCount,
-    @JsonKey(name: 'blink_duration') String? blinkDuration,
-  }) = _BluetoothDataModel;
+    List<String> receivedData = [];
+    if (dataList.length >= 4) {
+      receivedData =
+          dataList.map((e) => int.parse(e, radix: 16).toString()).toList();
 
-  factory BluetoothDataModel.fromJson(Map<String, dynamic> json) =>
-      _$BluetoothDataModelFromJson(json);
-
-  factory BluetoothDataModel.fromJsonString(Uint8List data) =>
-      BluetoothDataModel.fromJson(jsonDecode(utf8.decode(data)));
+      return BluetoothDataModel(
+        battery: receivedData[0],
+        blinkDuration: receivedData[1],
+        blinkCount: receivedData[2],
+        ppgValue: receivedData[3],
+      );
+    }
+    return const BluetoothDataModel();
+  }
 }

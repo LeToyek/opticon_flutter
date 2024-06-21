@@ -137,8 +137,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             borderRadius: BorderRadius.circular(24),
             color: colorScheme.onPrimary,
             boxShadow: [generalShadow]),
-        child: Expanded(
-            child: Column(
+        child: Column(
           children: [
             const Spacer(),
             Image.asset(imageUrl),
@@ -159,7 +158,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             )
           ],
-        )),
+        ),
       ),
     );
   }
@@ -195,7 +194,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         style: bodyLarge!.apply(color: colorScheme.onPrimary),
                       ),
                       Text(
-                        "${showFirstName(user!.displayName!)}!",
+                        "${showFirstName(user?.displayName ?? '')}!",
                         style: bodyLarge.apply(
                             color: colorScheme.onPrimary, fontWeightDelta: 2),
                       ),
@@ -239,7 +238,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(limitName(user.displayName!),
+                        Text(limitName(user?.displayName ?? ""),
                             style: Theme.of(context)
                                 .textTheme
                                 .titleLarge!
@@ -276,12 +275,21 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   String showFirstName(String name) {
+    if (name.isEmpty) {
+      return "";
+    }
     return name.split(" ")[0];
   }
 
   String limitName(String name) {
     //split it first, if it is too long then just put untill index 1
     final convertedName = name.split(" ");
+    if (convertedName.isEmpty) {
+      return "";
+    }
+    if (convertedName.length == 1) {
+      return convertedName[0];
+    }
     if (convertedName[0].length + convertedName[1].length > 14) {
       return convertedName[0];
     }
