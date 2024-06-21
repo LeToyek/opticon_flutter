@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 
 class QRPage extends ConsumerStatefulWidget {
   const QRPage({super.key});
@@ -16,18 +15,9 @@ class QRPage extends ConsumerStatefulWidget {
 }
 
 class _QRPageState extends ConsumerState<QRPage> {
-  // Initializing the Bluetooth connection state to be unknown
-  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
-  // Initializing a global key, as it would help us in showing a SnackBar later
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  // Get the instance of the Bluetooth
-  final FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
-  // Track the Bluetooth connection with the remote device
-  BluetoothConnection? connection;
 
   List<String> receivedData = [];
-
-  late int _deviceState;
 
   bool isDisconnecting = false;
 
@@ -40,105 +30,24 @@ class _QRPageState extends ConsumerState<QRPage> {
     'neutralTextColor': Colors.blue,
   };
 
-  // To track whether the device is still connected to Bluetooth
-  // bool? get isConnected => connection?.isConnected;
-  bool? get isConnected => connection != null && connection!.isConnected;
-
-  // Define some variables, which will be required later
-  List<BluetoothDevice> _devicesList = [];
-  BluetoothDevice? _device;
-  bool _connected = false;
-  bool _isButtonUnavailable = false;
-
   @override
   void initState() {
     super.initState();
-
-    // Get current state
-    FlutterBluetoothSerial.instance.state.then((state) {
-      setState(() {
-        _bluetoothState = state;
-      });
-    });
-
-    _deviceState = 0; // neutral
-
-    // If the bluetooth of the device is not enabled,
-    // then request permission to turn on bluetooth
-    // as the app starts up
-    enableBluetooth();
-
-    // Listen for further state changes
-    FlutterBluetoothSerial.instance
-        .onStateChanged()
-        .listen((BluetoothState state) {
-      setState(() {
-        _bluetoothState = state;
-        if (_bluetoothState == BluetoothState.STATE_OFF) {
-          _isButtonUnavailable = true;
-        }
-        getPairedDevices();
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    // Avoid memory leak and disconnect
-    if (isConnected!) {
-      isDisconnecting = true;
-      connection?.dispose();
-      // connection = null;
-    }
-
-    super.dispose();
-  }
-
-  // Request Bluetooth permission from the user
-  Future<void> enableBluetooth() async {
-    // Retrieving the current Bluetooth state
-    _bluetoothState = await FlutterBluetoothSerial.instance.state;
-
-    // If the bluetooth is off, then turn it on first
-    // and then retrieve the devices that are paired.
-    if (_bluetoothState == BluetoothState.STATE_OFF) {
-      await FlutterBluetoothSerial.instance.requestEnable();
-      await getPairedDevices();
-      // return true;
-    } else {
-      await getPairedDevices();
-    }
-    // return false;
-  }
-
-  // For retrieving and storing the paired devices
-  // in a list.
-  Future<void> getPairedDevices() async {
-    List<BluetoothDevice> devices = [];
-
-    // To get the list of paired devices
-    try {
-      devices = await _bluetooth.getBondedDevices();
-    } on PlatformException {
-      debugPrint("Error");
-    }
-
-    // It is an error to call [setState] unless [mounted] is true.
-    if (!mounted) {
-      return;
-    }
-
-    // Store the [devices] list in the [_devicesList] for accessing
-    // the list outside this class
-    setState(() {
-      _devicesList = devices;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(bluetoothControllerProvider.notifier).connectToDevice();
     });
   }
 
   // Now, its time to build the UI
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(bluetoothControllerProvider);
+    final notifier = ref.watch(bluetoothControllerProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
+    ref.listen(
+        bluetoothControllerProvider.select<String?>((value) => value.message),
+        onMessage);
+
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
@@ -165,12 +74,7 @@ class _QRPageState extends ConsumerState<QRPage> {
               // ),
               // splashColor: Colors.deepPurple,
               onPressed: () async {
-                // So, that when new devices are paired
-                // while the app is running, user can refresh
-                // the paired devices list.
-                await getPairedDevices().then((_) {
-                  show('Device list refreshed');
-                });
+                await notifier.getPairedDevices();
               },
             ),
           ],
@@ -179,19 +83,19 @@ class _QRPageState extends ConsumerState<QRPage> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Visibility(
-              visible: _isButtonUnavailable &&
-                  _bluetoothState == BluetoothState.STATE_ON,
+              visible: state.bluetoothDevice != null &&
+                  state.bluetoothState == BluetoothState.STATE_ON,
               child: const LinearProgressIndicator(
                 backgroundColor: Colors.yellow,
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
+            const Padding(
+              padding: EdgeInsets.all(10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Enable Bluetooth',
                       style: TextStyle(
@@ -200,30 +104,6 @@ class _QRPageState extends ConsumerState<QRPage> {
                       ),
                     ),
                   ),
-                  Switch(
-                    value: _bluetoothState.isEnabled,
-                    onChanged: (bool value) {
-                      future() async {
-                        if (value) {
-                          await FlutterBluetoothSerial.instance.requestEnable();
-                        } else {
-                          await FlutterBluetoothSerial.instance
-                              .requestDisable();
-                        }
-
-                        await getPairedDevices();
-                        _isButtonUnavailable = false;
-
-                        if (_connected) {
-                          _disconnect();
-                        }
-                      }
-
-                      future().then((_) {
-                        setState(() {});
-                      });
-                    },
-                  )
                 ],
               ),
             ),
@@ -251,18 +131,20 @@ class _QRPageState extends ConsumerState<QRPage> {
                             ),
                           ),
                           DropdownButton(
-                            items: _getDeviceItems(),
-                            onChanged: (value) =>
-                                setState(() => _device = value!),
-                            value: _devicesList.isNotEmpty ? _device : null,
+                            items: _getDeviceItems(state.devicesList),
+                            onChanged: notifier.changeDevice,
+                            value: state.devicesList.isNotEmpty
+                                ? state.bluetoothDevice
+                                : null,
                           ),
                           ElevatedButton(
-                            onPressed: _isButtonUnavailable
+                            onPressed: state.bluetoothDevice == null
                                 ? null
-                                : _connected
-                                    ? _disconnect
-                                    : _connect,
-                            child: Text(_connected ? 'Disconnect' : 'Connect'),
+                                : state.isConnected
+                                    ? notifier.disconnect
+                                    : notifier.connect,
+                            child: Text(
+                                state.isConnected ? 'Disconnect' : 'Connect'),
                           ),
                         ],
                       ),
@@ -272,16 +154,16 @@ class _QRPageState extends ConsumerState<QRPage> {
                       child: Card(
                         shape: RoundedRectangleBorder(
                           side: BorderSide(
-                            color: _deviceState == 0
+                            color: state.deviceState == 0
                                 ? colors['neutralBorderColor']!
-                                : _deviceState == 1
+                                : state.deviceState == 1
                                     ? colors['onBorderColor']!
                                     : colors['offBorderColor']!,
                             width: 3,
                           ),
                           borderRadius: BorderRadius.circular(4.0),
                         ),
-                        elevation: _deviceState == 0 ? 4 : 0,
+                        elevation: state.deviceState == 0 ? 4 : 0,
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -291,23 +173,23 @@ class _QRPageState extends ConsumerState<QRPage> {
                                   "DEVICE 1",
                                   style: TextStyle(
                                     fontSize: 20,
-                                    color: _deviceState == 0
+                                    color: state.deviceState == 0
                                         ? colors['neutralTextColor']
-                                        : _deviceState == 1
+                                        : state.deviceState == 1
                                             ? colors['onTextColor']
                                             : colors['offTextColor'],
                                   ),
                                 ),
                               ),
                               ElevatedButton(
-                                onPressed: _connected
-                                    ? _sendOnMessageToBluetooth
+                                onPressed: state.isConnected
+                                    ? notifier.sendOnMessageToBluetooth
                                     : null,
                                 child: const Text("ON"),
                               ),
                               ElevatedButton(
-                                onPressed: _connected
-                                    ? _sendOffMessageToBluetooth
+                                onPressed: state.isConnected
+                                    ? notifier.sendOffMessageToBluetooth
                                     : null,
                                 child: const Text("OFF"),
                               ),
@@ -357,15 +239,22 @@ class _QRPageState extends ConsumerState<QRPage> {
     );
   }
 
+  void onMessage(dynamic previous, dynamic next) {
+    if (next != null) {
+      show(next);
+    }
+  }
+
   // Create the List of devices to be shown in Dropdown Menu
-  List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems() {
+  List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems(
+      List<BluetoothDevice> devicesList) {
     List<DropdownMenuItem<BluetoothDevice>> items = [];
-    if (_devicesList.isEmpty) {
+    if (devicesList.isEmpty) {
       items.add(const DropdownMenuItem(
         child: Text('NONE'),
       ));
     } else {
-      for (var device in _devicesList) {
+      for (var device in devicesList) {
         items.add(DropdownMenuItem(
           value: device,
           child: Text(device.name ?? ''),
@@ -375,81 +264,61 @@ class _QRPageState extends ConsumerState<QRPage> {
     return items;
   }
 
-  void processReceivedData(Uint8List data) {
-    String hexData = String.fromCharCodes(data);
-    List<String> dataList =
-        hexData.split('\n').where((element) => element.isNotEmpty).toList();
-
-    if (dataList.length >= 3) {
-      setState(() {
-        receivedData =
-            dataList.map((e) => hexStringToInt(e).toString()).toList();
-        print("Baterai: ${receivedData[0]}%");
-        print("KPM: ${receivedData[1]}");
-        print("BPM: ${receivedData[2]}");
-      });
-    }
-  }
-
-  int hexStringToInt(String hex) {
-    return int.parse(hex, radix: 16);
-  }
-
   // Method to connect to bluetooth
-  void _connect() async {
-    setState(() {
-      _isButtonUnavailable = true;
-    });
-    if (_device == null) {
-      show('No device selected');
-    } else {
-      // if (connection == null || (connection != null && !isConnected!)) {
-      if (!isConnected!) {
-        await BluetoothConnection.toAddress(_device?.address).then((conn) {
-          debugPrint('Connected to the device');
-          connection = conn;
-          setState(() {
-            _connected = true;
-          });
+  // void _connect() async {
+  //   setState(() {
+  //     _isButtonUnavailable = true;
+  //   });
+  //   if (_device == null) {
+  //     show('No device selected');
+  //   } else {
+  //     // if (connection == null || (connection != null && !isConnected!)) {
+  //     if (!isConnected!) {
+  //       await BluetoothConnection.toAddress(_device?.address).then((conn) {
+  //         debugPrint('Connected to the device');
+  //         connection = conn;
+  //         setState(() {
+  //           _connected = true;
+  //         });
 
-          connection?.input?.listen(
-            (Uint8List data) {
-              // decode data to json then get the value
+  //         connection?.input?.listen(
+  //           (Uint8List data) {
+  //             // decode data to json then get the value
 
-              final dataString = utf8.decode(data);
-              print(dataString);
-              processReceivedData(data);
-            },
-            onDone: () {
-              if (isDisconnecting) {
-                debugPrint('Disconnecting locally!');
-              } else {
-                debugPrint('Disconnected remotely!');
-              }
-              if (mounted) {
-                setState(() {});
-              }
-            },
-          ).onDone(() {
-            if (isDisconnecting) {
-              debugPrint('Disconnecting locally!');
-            } else {
-              debugPrint('Disconnected remotely!');
-            }
-            if (mounted) {
-              setState(() {});
-            }
-          });
-        }).catchError((error) {
-          debugPrint('Cannot connect, exception occurred');
-          debugPrint(error);
-        });
-        show('Device connected');
+  //             final dataString = utf8.decode(data);
+  //             print(dataString);
+  //             processReceivedData(data);
+  //           },
+  //           onDone: () {
+  //             if (isDisconnecting) {
+  //               debugPrint('Disconnecting locally!');
+  //             } else {
+  //               debugPrint('Disconnected remotely!');
+  //             }
+  //             if (mounted) {
+  //               setState(() {});
+  //             }
+  //           },
+  //         ).onDone(() {
+  //           if (isDisconnecting) {
+  //             debugPrint('Disconnecting locally!');
+  //           } else {
+  //             debugPrint('Disconnected remotely!');
+  //           }
+  //           if (mounted) {
+  //             setState(() {});
+  //           }
+  //         });
+  //       }).catchError((error) {
+  //         debugPrint('Cannot connect, exception occurred');
+  //         debugPrint(error);
+  //       });
+  //       show('Device connected');
 
-        setState(() => _isButtonUnavailable = false);
-      }
-    }
-  }
+  //       setState(() => _isButtonUnavailable = false);
+  //     }
+  //   }
+  // }
 
   // void _onDataReceived(Uint8List data) {
   //   // Allocate buffer for parsed data
@@ -478,45 +347,9 @@ class _QRPageState extends ConsumerState<QRPage> {
   // }
 
   // Method to disconnect bluetooth
-  void _disconnect() async {
-    setState(() {
-      _isButtonUnavailable = true;
-      _deviceState = 0;
-    });
-
-    await connection?.close();
-    show('Device disconnected');
-    if (!connection!.isConnected) {
-      setState(() {
-        _connected = false;
-        _isButtonUnavailable = false;
-      });
-    }
-  }
 
   // Method to send message,
   // for turning the Bluetooth device on
-  void _sendOnMessageToBluetooth() async {
-    Uint8List data = utf8.encode("1" "\r\n");
-    connection?.output.add(data);
-    await connection?.output.allSent;
-    show('Device Turned On');
-    setState(() {
-      _deviceState = 1; // device on
-    });
-  }
-
-  // Method to send message,
-  // for turning the Bluetooth device off
-  void _sendOffMessageToBluetooth() async {
-    Uint8List data = utf8.encode("0" "\r\n");
-    connection?.output.add(data);
-    await connection?.output.allSent;
-    show('Device Turned Off');
-    setState(() {
-      _deviceState = -1; // device off
-    });
-  }
 
   // Method to show a Snackbar,
   // taking message as the text
