@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1044228242957",
+    "project_id": "opticon-final",
+    "storage_bucket": "opticon-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044228242957:android:51e57be2b0ec0c51151f44",
+        "android_client_info": {
+          "package_name": "com.example.opticon_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1044228242957-t72mmji3n5222rd5v4qqlptr1l4bs7k2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.opticon_flutter",
+            "certificate_hash": "a7b035034ce2da92ab4cc0a0519786640898c774"
+          }
+        },
+        {
+          "client_id": "1044228242957-jga1eq8udlhdupd0m29u5b6r0lvogd5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD73zU37v8uHMzGOVHfnKOWNGMBxREPUHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1044228242957-jga1eq8udlhdupd0m29u5b6r0lvogd5f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
