@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:opticon_flutter/domain/model/bluetooth_data_model.dart';
 import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -117,27 +118,38 @@ class BluetoothController extends _$BluetoothController {
   }
 
   onData(Uint8List data) {
-    final dataString = utf8.decode(data);
-    print(dataString);
-    _processReceivedData(data);
-  }
-
-  void _processReceivedData(Uint8List data) {
-    String hexData = String.fromCharCodes(data);
-    List<String> dataList =
-        hexData.split('\n').where((element) => element.isNotEmpty).toList();
-
-    if (dataList.length >= 3) {
-      final receivedData =
-          dataList.map((e) => _hexStringToInt(e).toString()).toList();
-
-      print("Baterai: ${receivedData[0]}%");
-      print("KPM: ${receivedData[1]}");
-      print("BPM: ${receivedData[2]}");
+    // final dataString = utf8.decode(data);
+    // print(dataString);
+    final dataReceived = _fromHexData(data);
+    if (dataReceived != null) {
+      state = state.copyWith(btData: dataReceived);
     }
   }
 
-  int _hexStringToInt(String hex) {
-    return int.parse(hex, radix: 16);
+  BluetoothDataModel? _fromHexData(Uint8List data) {
+    String hexData = String.fromCharCodes(data);
+    List<String> dataList =
+        hexData.split(',').where((element) => element.isNotEmpty).toList();
+
+    print("Data: $dataList");
+
+    List<String> receivedData = [];
+    if (dataList.length >= 4) {
+      receivedData =
+          dataList.map((e) => int.parse(e, radix: 16).toString()).toList();
+
+      print("Baterai: ${receivedData[0]}%");
+      print("KPM: ${receivedData[1]}");
+      print("BlPM: ${receivedData[2]}");
+      print("BPM: ${receivedData[3]}");
+
+      return BluetoothDataModel(
+        battery: receivedData[0],
+        blinkDuration: receivedData[1],
+        blinkCount: receivedData[2],
+        ppgValue: receivedData[3],
+      );
+    }
+    return null;
   }
 }

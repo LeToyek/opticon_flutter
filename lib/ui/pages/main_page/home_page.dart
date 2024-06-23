@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/user_controller/user_controller.dart';
 import 'package:opticon_flutter/ui/pages/auth_page/auth_page.dart';
 import 'package:opticon_flutter/ui/pages/iot_page/iot_device_page.dart';
@@ -168,6 +169,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final size = MediaQuery.of(context).size;
     final bodyLarge = Theme.of(context).textTheme.bodyLarge;
     final user = ref.watch(userControllerProvider).value;
+    final btState = ref.watch(bluetoothControllerProvider);
 
     var iotIdState = "5Rz3sB7a9P";
     var iotStatusState = "Connected";
@@ -220,55 +222,98 @@ class _HomePageState extends ConsumerState<HomePage> {
             right: 0,
             child: Center(
               child: Container(
-                width: size.width * 0.9,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    color: colorScheme.onPrimary,
-                    boxShadow: [generalShadow]),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const BatteryChart(),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Expanded(
-                        child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(limitName(user?.displayName ?? ""),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge!
-                                .apply(
-                                    fontWeightDelta: 2,
-                                    color: colorScheme.onBackground)),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Text(iotIdState),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                color: colorScheme.surfaceVariant),
-                            child: Text(iotStatusState,
+                  width: size.width * 0.9,
+                  height: (size.height / 5) + 8,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: colorScheme.onPrimary,
+                      boxShadow: [generalShadow]),
+                  child: btState.isConnected
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const BatteryChart(),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Expanded(
+                                child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(limitName(user?.displayName ?? ""),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .apply(
+                                            fontWeightDelta: 2,
+                                            color: colorScheme.onBackground)),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(iotIdState),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(16),
+                                        color: colorScheme.surfaceVariant),
+                                    child: Text(iotStatusState,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .apply(
+                                                color: colorScheme
+                                                    .onSurfaceVariant)))
+                              ],
+                            ))
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Spacer(),
+                            Text("No Device Connected",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyMedium!
+                                    .titleLarge!
                                     .apply(
-                                        color: colorScheme.onSurfaceVariant)))
-                      ],
-                    ))
-                  ],
-                ),
-              ),
+                                        fontWeightDelta: 2,
+                                        color: colorScheme.onBackground)),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            const Spacer(),
+                            InkWell(
+                              onTap: () => Navigator.pushNamed(
+                                  context, QRPage.routePath),
+                              child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16),
+                                      color: colorScheme.primary),
+                                  child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.bluetooth,
+                                            color: Colors.white),
+                                        const SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text(
+                                          "Connect Device",
+                                          style: TextStyle(
+                                              color: colorScheme.onPrimary),
+                                        )
+                                      ])),
+                            )
+                          ],
+                        )),
             ))
       ],
     );

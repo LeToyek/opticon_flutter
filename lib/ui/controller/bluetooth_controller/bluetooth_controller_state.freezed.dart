@@ -22,6 +22,7 @@ mixin _$BluetoothControllerState {
   List<BluetoothDevice> get devicesList => throw _privateConstructorUsedError;
   BluetoothConnection? get connection => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
+  BluetoothDataModel? get btData => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $BluetoothControllerStateCopyWith<BluetoothControllerState> get copyWith =>
@@ -40,7 +41,8 @@ abstract class $BluetoothControllerStateCopyWith<$Res> {
       int? deviceState,
       List<BluetoothDevice> devicesList,
       BluetoothConnection? connection,
-      String? message});
+      String? message,
+      BluetoothDataModel? btData});
 }
 
 /// @nodoc
@@ -63,6 +65,7 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
     Object? devicesList = null,
     Object? connection = freezed,
     Object? message = freezed,
+    Object? btData = freezed,
   }) {
     return _then(_value.copyWith(
       bluetoothDevice: freezed == bluetoothDevice
@@ -89,6 +92,10 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
+      btData: freezed == btData
+          ? _value.btData
+          : btData // ignore: cast_nullable_to_non_nullable
+              as BluetoothDataModel?,
     ) as $Val);
   }
 }
@@ -108,7 +115,8 @@ abstract class _$$BluetoothControllerStateImplCopyWith<$Res>
       int? deviceState,
       List<BluetoothDevice> devicesList,
       BluetoothConnection? connection,
-      String? message});
+      String? message,
+      BluetoothDataModel? btData});
 }
 
 /// @nodoc
@@ -130,6 +138,7 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
     Object? devicesList = null,
     Object? connection = freezed,
     Object? message = freezed,
+    Object? btData = freezed,
   }) {
     return _then(_$BluetoothControllerStateImpl(
       bluetoothDevice: freezed == bluetoothDevice
@@ -156,6 +165,10 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
               as String?,
+      btData: freezed == btData
+          ? _value.btData
+          : btData // ignore: cast_nullable_to_non_nullable
+              as BluetoothDataModel?,
     ));
   }
 }
@@ -169,7 +182,8 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
       this.deviceState,
       final List<BluetoothDevice> devicesList = const [],
       this.connection,
-      this.message})
+      this.message,
+      this.btData})
       : _devicesList = devicesList,
         super._();
 
@@ -192,10 +206,12 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
   final BluetoothConnection? connection;
   @override
   final String? message;
+  @override
+  final BluetoothDataModel? btData;
 
   @override
   String toString() {
-    return 'BluetoothControllerState(bluetoothDevice: $bluetoothDevice, bluetoothState: $bluetoothState, deviceState: $deviceState, devicesList: $devicesList, connection: $connection, message: $message)';
+    return 'BluetoothControllerState(bluetoothDevice: $bluetoothDevice, bluetoothState: $bluetoothState, deviceState: $deviceState, devicesList: $devicesList, connection: $connection, message: $message, btData: $btData)';
   }
 
   @override
@@ -213,7 +229,8 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
                 .equals(other._devicesList, _devicesList) &&
             (identical(other.connection, connection) ||
                 other.connection == connection) &&
-            (identical(other.message, message) || other.message == message));
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.btData, btData) || other.btData == btData));
   }
 
   @override
@@ -224,7 +241,8 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
       deviceState,
       const DeepCollectionEquality().hash(_devicesList),
       connection,
-      message);
+      message,
+      btData);
 
   @JsonKey(ignore: true)
   @override
@@ -241,7 +259,8 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
       final int? deviceState,
       final List<BluetoothDevice> devicesList,
       final BluetoothConnection? connection,
-      final String? message}) = _$BluetoothControllerStateImpl;
+      final String? message,
+      final BluetoothDataModel? btData}) = _$BluetoothControllerStateImpl;
   _BluetoothControllerState._() : super._();
 
   @override
@@ -256,6 +275,8 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
   BluetoothConnection? get connection;
   @override
   String? get message;
+  @override
+  BluetoothDataModel? get btData;
   @override
   @JsonKey(ignore: true)
   _$$BluetoothControllerStateImplCopyWith<_$BluetoothControllerStateImpl>
