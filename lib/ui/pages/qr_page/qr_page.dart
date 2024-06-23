@@ -1,9 +1,10 @@
 import 'dart:async';
 
+import 'package:awesome_ripple_animation/awesome_ripple_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
+import 'package:opticon_flutter/ui/pages/iot_page/iot_device_page.dart';
 
 class QRPage extends ConsumerStatefulWidget {
   const QRPage({super.key});
@@ -38,204 +39,292 @@ class _QRPageState extends ConsumerState<QRPage> {
     });
   }
 
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeInOut,
+    );
+  }
+
   // Now, its time to build the UI
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(bluetoothControllerProvider);
     final notifier = ref.watch(bluetoothControllerProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
+    final size = MediaQuery.of(context).size;
     ref.listen(
         bluetoothControllerProvider.select<String?>((value) => value.message),
         onMessage);
-
     return MaterialApp(
       home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          foregroundColor: Colors.white,
-          title: const Text(
-            "Flutter Bluetooth",
-          ),
-          backgroundColor: colorScheme.primary,
-          actions: <Widget>[
-            ElevatedButton.icon(
-              icon: const Icon(
-                Icons.refresh,
-                color: Colors.white,
-              ),
-              label: const Text(
-                "Refresh",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(30),
-              // ),
-              // splashColor: Colors.deepPurple,
-              onPressed: () async {
-                await notifier.getPairedDevices();
-              },
-            ),
-          ],
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Visibility(
-              visible: state.bluetoothDevice != null &&
-                  state.bluetoothState == BluetoothState.STATE_ON,
-              child: const LinearProgressIndicator(
-                backgroundColor: Colors.yellow,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      'Enable Bluetooth',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
+          key: _scaffoldKey,
+          body: Center(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: size.height / 6,
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Stack(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: Text(
-                        "PAIRED DEVICES",
-                        style: TextStyle(fontSize: 24, color: Colors.blue),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const Text(
-                            'Device:',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          DropdownButton(
-                            items: _getDeviceItems(state.devicesList),
-                            onChanged: notifier.changeDevice,
-                            value: state.devicesList.isNotEmpty
-                                ? state.bluetoothDevice
-                                : null,
-                          ),
-                          ElevatedButton(
-                            onPressed: state.bluetoothDevice == null
-                                ? null
-                                : state.isConnected
-                                    ? notifier.disconnect
-                                    : notifier.connect,
-                            child: Text(
-                                state.isConnected ? 'Disconnect' : 'Connect'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                            color: state.deviceState == 0
-                                ? colors['neutralBorderColor']!
-                                : state.deviceState == 1
-                                    ? colors['onBorderColor']!
-                                    : colors['offBorderColor']!,
-                            width: 3,
-                          ),
-                          borderRadius: BorderRadius.circular(4.0),
-                        ),
-                        elevation: state.deviceState == 0 ? 4 : 0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Text(
-                                  "DEVICE 1",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: state.deviceState == 0
-                                        ? colors['neutralTextColor']
-                                        : state.deviceState == 1
-                                            ? colors['onTextColor']
-                                            : colors['offTextColor'],
-                                  ),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: state.isConnected
-                                    ? notifier.sendOnMessageToBluetooth
-                                    : null,
-                                child: const Text("ON"),
-                              ),
-                              ElevatedButton(
-                                onPressed: state.isConnected
-                                    ? notifier.sendOffMessageToBluetooth
-                                    : null,
-                                child: const Text("OFF"),
-                              ),
-                            ],
-                          ),
+                    RippleAnimation(
+                      repeat: true,
+                      color: state.isConnected
+                          ? colorScheme.surfaceVariant
+                          : state.isButtonUnavailable
+                              ? Colors.blue
+                              : colorScheme.primary,
+                      minRadius: 90,
+                      ripplesCount: 6,
+                      size: Size(size.height / 5, size.height / 5),
+                      child: CircleAvatar(
+                        backgroundColor: state.isConnected
+                            ? colorScheme.surfaceVariant
+                            : state.isButtonUnavailable
+                                ? Colors.blue
+                                : colorScheme.primary,
+                        radius: 100,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            state.isConnected
+                                ? Text(
+                                    state.bluetoothDevice?.name ?? '',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.bluetooth_outlined,
+                                    color: Colors.white,
+                                    size: 56,
+                                  )
+                          ],
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: size.height / 6,
+                    ),
+                    state.isConnected
+                        ? showConnected(state, notifier, context, colorScheme)
+                        : showChooseDevice(
+                            state, notifier, context, colorScheme),
                   ],
                 ),
-                Container(
-                  color: Colors.blue,
-                ),
-              ],
+              ),
+            ),
+          )),
+    );
+  }
+
+  Widget showConnected(state, notifier, context, colorScheme) {
+    return Column(
+      children: [
+        Text(
+          'Terhubung dengan ${state.bluetoothDevice?.name}',
+          style:
+              Theme.of(context).textTheme.bodyLarge!.apply(fontWeightDelta: 2),
+        ),
+        Text(
+          'Silahkan lihat data anda dengan menekan tombol lihat di bawah ini',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceVariant.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(context, IOTDevice.routePath);
+            },
+            child: Center(
+              child: Text(
+                'Lihat Data IOT',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .apply(color: Colors.white, fontWeightDelta: 2),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(
+          children: [
+            Expanded(
+                flex: 2,
+                child: InkWell(
+                  onTap: () {
+                    notifier.disconnect();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Disconnect',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .apply(color: Colors.white, fontWeightDelta: 2),
+                      ),
+                    ),
+                  ),
+                )),
+            const SizedBox(
+              width: 16,
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        "NOTE: If you cannot find the device in the list, please pair the device by going to the bluetooth settings",
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red,
-                        ),
+                flex: 1,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Kembali',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .apply(color: Colors.white, fontWeightDelta: 2),
                       ),
-                      const SizedBox(height: 15),
-                      ElevatedButton(
-                        // elevation: 2,
-                        child: const Text("Bluetooth Settings"),
-                        onPressed: () {
-                          FlutterBluetoothSerial.instance.openSettings();
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            )
+                )),
           ],
+        )
+      ],
+    );
+  }
+
+  Widget showChooseDevice(state, notifier, context, colorScheme) {
+    return Column(
+      children: [
+        Text(
+          'Menghubungkan ke perangkat IOT',
+          style:
+              Theme.of(context).textTheme.bodyLarge!.apply(fontWeightDelta: 2),
         ),
-      ),
+        Text(
+          'Silahkan pilih perangkat dengan nama "ESP" di depan, lalu tekan tombol "Connect"',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+        state.devicesList.isEmpty
+            ? const Text('No devices found')
+            : ListView.builder(
+                itemCount: state.devicesList.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final device = state.devicesList[index];
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: state.bluetoothDevice?.address == device.address
+                          ? colorScheme.primary.withOpacity(0.8)
+                          : Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.primary.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: ListTile(
+                      title: Text(device.name ?? ''),
+                      onTap: () {
+                        notifier.changeDevice(device);
+                      },
+                    ),
+                  );
+                }),
+        const SizedBox(
+          height: 16,
+        ),
+        Row(
+          children: [
+            Expanded(
+                flex: 2,
+                child: InkWell(
+                  onTap: () {
+                    _scrollToTop();
+                    notifier.connect();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Connect',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .apply(color: Colors.white, fontWeightDelta: 2),
+                      ),
+                    ),
+                  ),
+                )),
+            const SizedBox(
+              width: 16,
+            ),
+            Expanded(
+                flex: 1,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade300,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Kembali',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .apply(color: Colors.white, fontWeightDelta: 2),
+                      ),
+                    ),
+                  ),
+                )),
+          ],
+        )
+      ],
     );
   }
 
@@ -245,113 +334,6 @@ class _QRPageState extends ConsumerState<QRPage> {
     }
   }
 
-  // Create the List of devices to be shown in Dropdown Menu
-  List<DropdownMenuItem<BluetoothDevice>> _getDeviceItems(
-      List<BluetoothDevice> devicesList) {
-    List<DropdownMenuItem<BluetoothDevice>> items = [];
-    if (devicesList.isEmpty) {
-      items.add(const DropdownMenuItem(
-        child: Text('NONE'),
-      ));
-    } else {
-      for (var device in devicesList) {
-        items.add(DropdownMenuItem(
-          value: device,
-          child: Text(device.name ?? ''),
-        ));
-      }
-    }
-    return items;
-  }
-
-  // Method to connect to bluetooth
-  // void _connect() async {
-  //   setState(() {
-  //     _isButtonUnavailable = true;
-  //   });
-  //   if (_device == null) {
-  //     show('No device selected');
-  //   } else {
-  //     // if (connection == null || (connection != null && !isConnected!)) {
-  //     if (!isConnected!) {
-  //       await BluetoothConnection.toAddress(_device?.address).then((conn) {
-  //         debugPrint('Connected to the device');
-  //         connection = conn;
-  //         setState(() {
-  //           _connected = true;
-  //         });
-
-  //         connection?.input?.listen(
-  //           (Uint8List data) {
-  //             // decode data to json then get the value
-
-  //             final dataString = utf8.decode(data);
-  //             print(dataString);
-  //             processReceivedData(data);
-  //           },
-  //           onDone: () {
-  //             if (isDisconnecting) {
-  //               debugPrint('Disconnecting locally!');
-  //             } else {
-  //               debugPrint('Disconnected remotely!');
-  //             }
-  //             if (mounted) {
-  //               setState(() {});
-  //             }
-  //           },
-  //         ).onDone(() {
-  //           if (isDisconnecting) {
-  //             debugPrint('Disconnecting locally!');
-  //           } else {
-  //             debugPrint('Disconnected remotely!');
-  //           }
-  //           if (mounted) {
-  //             setState(() {});
-  //           }
-  //         });
-  //       }).catchError((error) {
-  //         debugPrint('Cannot connect, exception occurred');
-  //         debugPrint(error);
-  //       });
-  //       show('Device connected');
-
-  //       setState(() => _isButtonUnavailable = false);
-  //     }
-  //   }
-  // }
-
-  // void _onDataReceived(Uint8List data) {
-  //   // Allocate buffer for parsed data
-  //   int backspacesCounter = 0;
-  //   data.forEach((byte) {
-  //     if (byte == 8 || byte == 127) {
-  //       backspacesCounter++;
-  //     }
-  //   });
-  //   Uint8List buffer = Uint8List(data.length - backspacesCounter);
-  //   int bufferIndex = buffer.length;
-
-  //   // Apply backspace control character
-  //   backspacesCounter = 0;
-  //   for (int i = data.length - 1; i >= 0; i--) {
-  //     if (data[i] == 8 || data[i] == 127) {
-  //       backspacesCounter++;
-  //     } else {
-  //       if (backspacesCounter > 0) {
-  //         backspacesCounter--;
-  //       } else {
-  //         buffer[--bufferIndex] = data[i];
-  //       }
-  //     }
-  //   }
-  // }
-
-  // Method to disconnect bluetooth
-
-  // Method to send message,
-  // for turning the Bluetooth device on
-
-  // Method to show a Snackbar,
   // taking message as the text
   Future show(
     String message, {
