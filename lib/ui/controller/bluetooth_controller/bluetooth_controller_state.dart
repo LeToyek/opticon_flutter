@@ -1,5 +1,6 @@
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:opticon_flutter/domain/model/bluetooth_data_model.dart';
 
 part 'bluetooth_controller_state.freezed.dart';
 
@@ -14,6 +15,7 @@ class BluetoothControllerState with _$BluetoothControllerState {
     @Default([]) List<BluetoothDevice> devicesList,
     BluetoothConnection? connection,
     String? message,
+    BluetoothDataModel? btData,
   }) = _BluetoothControllerState;
 
   bool get isConnected => connection != null && connection!.isConnected;

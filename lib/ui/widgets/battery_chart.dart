@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/domain/model/battery_model.dart';
 import 'package:opticon_flutter/ui/controller/battery_controller/battery_controller.dart';
 import 'package:opticon_flutter/ui/controller/battery_controller/battery_state.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 
 class BatteryChart extends ConsumerStatefulWidget {
   const BatteryChart({super.key});
@@ -15,6 +16,8 @@ class _BatteryChartState extends ConsumerState<BatteryChart> {
   @override
   Widget build(BuildContext context) {
     final batteryState = ref.watch(batteryControllerProvider);
+    final btState =
+        ref.watch(bluetoothControllerProvider.select((value) => value.btData));
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     return AnimatedContainer(
@@ -23,11 +26,15 @@ class _BatteryChartState extends ConsumerState<BatteryChart> {
       child: Column(
         children: [
           switch (batteryState) {
-            InitialBatteryState(battery: final batteryInitial) =>
-              _buildChart(context, batteryData: batteryInitial!),
+            InitialBatteryState(battery: final batteryInitial) => _buildChart(
+                context,
+                batteryData: BatteryModel(
+                    batteryValue: int.tryParse(btState?.battery ?? '0'))),
             LoadingBatteryState() => const CircularProgressIndicator(),
-            LoadedBatteryState(battery: final batteryData) =>
-              _buildChart(context, batteryData: batteryData!),
+            LoadedBatteryState(battery: final batteryData) => _buildChart(
+                context,
+                batteryData: BatteryModel(
+                    batteryValue: int.tryParse(btState?.battery ?? '0'))),
             ErrorBatteryState(message: final message) => Text(message)
           },
           Text(
