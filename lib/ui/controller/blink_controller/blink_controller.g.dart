@@ -6,7 +6,7 @@ part of 'blink_controller.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$blinkControllerHash() => r'c35029ee82b224374fb1595c560a1450189ec2e2';
+String _$blinkControllerHash() => r'fd27dd6e656a0f31cb422fa4090a3941c223888b';
 
 /// See also [BlinkController].
 @ProviderFor(BlinkController)

@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_state.dart';
 import 'package:opticon_flutter/utils/convert_string.dart';
@@ -12,7 +9,6 @@ part 'heart_beat_controller.g.dart';
 class HeartBeatController extends _$HeartBeatController {
   @override
   HeartBeatState build() {
-    getDummyRealTimeHeartBeat();
     return InitialHeartBeatState(heartBeatsInitial: [
       const HeartBeatModel(bpmValue: 0, createdAt: '00'),
       const HeartBeatModel(bpmValue: 0, createdAt: '01'),
@@ -28,19 +24,14 @@ class HeartBeatController extends _$HeartBeatController {
     ]);
   }
 
-  void getDummyRealTimeHeartBeat() {
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
-      final heartBeats = state.heartBeats;
-      // state = LoadingHeartBeatState(heartBeats: [...heartBeats]);
-      heartBeats.removeAt(0);
-      heartBeats.add(HeartBeatModel(
-          bpmValue: generateRandomNumber(),
-          createdAt: extractSecond(DateTime.now().toString())));
-      state = LoadedHeartBeatState(heartBeats: [...heartBeats]);
-    });
-  }
-
-  int generateRandomNumber() {
-    return Random().nextInt(30) + 80;
+  void getHeartBeatData(String bpmValue) {
+    final convertedBpmValue = int.parse(bpmValue);
+    final heartBeats = state.heartBeats;
+    // state = LoadingHeartBeatState(heartBeats: [...heartBeats]);
+    heartBeats.removeAt(0);
+    heartBeats.add(HeartBeatModel(
+        bpmValue: convertedBpmValue,
+        createdAt: extractSecond(DateTime.now().toString())));
+    state = LoadedHeartBeatState(heartBeats: [...heartBeats]);
   }
 }

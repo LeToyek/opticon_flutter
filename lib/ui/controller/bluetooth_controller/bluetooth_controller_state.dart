@@ -8,15 +8,18 @@ part 'bluetooth_controller_state.freezed.dart';
 class BluetoothControllerState with _$BluetoothControllerState {
   const BluetoothControllerState._();
 
-  factory BluetoothControllerState({
-    BluetoothDevice? bluetoothDevice,
-    BluetoothState? bluetoothState,
-    int? deviceState,
-    @Default([]) List<BluetoothDevice> devicesList,
-    BluetoothConnection? connection,
-    String? message,
-    BluetoothDataModel? btData,
-  }) = _BluetoothControllerState;
+  factory BluetoothControllerState(
+      {BluetoothDevice? bluetoothDevice,
+      BluetoothState? bluetoothState,
+      int? deviceState,
+      @Default([]) List<BluetoothDevice> devicesList,
+      BluetoothConnection? connection,
+      String? message,
+      BluetoothDataModel? btData,
+      @Default(0) int blinkCount,
+      @Default(false) bool isBlink,
+      @Default(0) int minutePast,
+      @Default(false) bool isButtonUnavailable}) = _BluetoothControllerState;
 
   bool get isConnected => connection != null && connection!.isConnected;
 }

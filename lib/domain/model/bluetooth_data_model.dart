@@ -11,4 +11,20 @@ class BluetoothDataModel {
     this.blinkCount,
     this.ppgValue,
   });
+
+  //make copy with
+
+  BluetoothDataModel copyWith({
+    String? battery,
+    String? blinkDuration,
+    String? blinkCount,
+    String? ppgValue,
+  }) {
+    return BluetoothDataModel(
+      battery: battery ?? this.battery,
+      blinkDuration: blinkDuration ?? this.blinkDuration,
+      blinkCount: blinkCount ?? this.blinkCount,
+      ppgValue: ppgValue ?? this.ppgValue,
+    );
+  }
 }

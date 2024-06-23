@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:opticon_flutter/domain/model/bluetooth_data_model.dart';
 import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_state.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -13,22 +15,36 @@ class HeartBeatChart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final heartBeatsState = ref.watch(heartBeatControllerProvider);
     final size = MediaQuery.of(context).size;
+    ref.listen(
+        bluetoothControllerProvider
+            .select<BluetoothDataModel?>((value) => value.btData),
+        onBeat(ref));
 
     return switch (heartBeatsState) {
       InitialHeartBeatState(heartBeats: final heartBeatsInitial) =>
-        _buildChart(heartBeatsInitial, 'Heart Beat (BPM)', size),
+        _buildChart(heartBeatsInitial, 'Heart Beat (BPM)', size, ref),
       LoadingHeartBeatState(heartBeats: final heartBeats) =>
         // _buildChart(heartBeats),
         const CircularProgressIndicator(),
       LoadedHeartBeatState(heartBeats: final heartBeats) =>
-        _buildChart(heartBeats, 'Heart Beat (BPM)', size),
+        _buildChart(heartBeats, 'Heart Beat (BPM)', size, ref),
       ErrorHeartBeatState(message: final message) => Text(message)
     };
   }
 
-  Widget _buildChart(List<HeartBeatModel> heartBeats, String title, Size size) {
+  Function(dynamic, dynamic) onBeat(WidgetRef ref) => (previous, next) {
+        print("prev: $previous, next: $next");
+        ref
+            .read(heartBeatControllerProvider.notifier)
+            .getHeartBeatData(next!.ppgValue);
+      };
+
+  Widget _buildChart(
+      List<HeartBeatModel> heartBeats, String title, Size size, WidgetRef ref) {
     final width = size.width - 24;
     final height = size.height / 5;
+    final btState =
+        ref.watch(bluetoothControllerProvider.select((value) => value.btData));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -96,7 +112,7 @@ class HeartBeatChart extends ConsumerWidget {
                     width: 8,
                   ),
                   Text(
-                    "${heartBeats.last.bpmValue.toString()} BPM",
+                    "${btState?.ppgValue.toString()} BPM",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,
