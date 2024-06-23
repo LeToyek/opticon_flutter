@@ -60,6 +60,9 @@ class BluetoothController extends _$BluetoothController {
 
   void onBluetoothChange(BluetoothState bState) {
     state = state.copyWith(bluetoothState: bState);
+    if (state.bluetoothState == BluetoothState.STATE_OFF) {
+      state = state.copyWith(isButtonUnavailable: true);
+    }
     getPairedDevices();
   }
 
@@ -94,13 +97,17 @@ class BluetoothController extends _$BluetoothController {
   }
 
   Future<void> disconnect() async {
-    state = state.copyWith(deviceState: 0);
+    state = state.copyWith(
+        deviceState: 0, isButtonUnavailable: true, bluetoothDevice: null);
 
     await state.connection?.close();
-    state = state.copyWith(message: 'Device disconnected');
+    await _connectionSubscription?.cancel();
+    state = state.copyWith(
+        message: 'Device disconnected', isButtonUnavailable: false);
   }
 
   Future<void> connect() async {
+    state = state.copyWith(isButtonUnavailable: true);
     if (state.bluetoothDevice == null) {
       state = state.copyWith(message: 'No device selected');
     } else {
@@ -112,7 +119,8 @@ class BluetoothController extends _$BluetoothController {
         state = state.copyWith(connection: conn);
 
         _connectionSubscription = conn.input?.listen(onData);
-        state = state.copyWith(message: 'Device connected');
+        state = state.copyWith(
+            message: 'Device connected', isButtonUnavailable: false);
       }
     }
   }
@@ -134,21 +142,41 @@ class BluetoothController extends _$BluetoothController {
     print("Data: $dataList");
 
     List<String> receivedData = [];
-    if (dataList.length >= 4) {
+    if (dataList.length == 3) {
       receivedData =
           dataList.map((e) => int.parse(e, radix: 16).toString()).toList();
 
-      print("Baterai: ${receivedData[0]}%");
-      print("KPM: ${receivedData[1]}");
-      print("BlPM: ${receivedData[2]}");
-      print("BPM: ${receivedData[3]}");
+      if (receivedData[0] != "101") {
+        // print("BPM: ${receivedData[3]}");
+        print("BATTERY: ${receivedData[0]}%");
+        print("BLPM: ${receivedData[1]}");
+        print("BPM: ${receivedData[2]}");
 
-      return BluetoothDataModel(
-        battery: receivedData[0],
-        blinkDuration: receivedData[1],
-        blinkCount: receivedData[2],
-        ppgValue: receivedData[3],
-      );
+        final double convertedBlPM = int.tryParse(receivedData[2])! / 100;
+
+        // get the time now, is the time minute is different with the past minute (state.minutePast)
+        final now = DateTime.now();
+        final minute = now.minute;
+        if (minute != state.minutePast) {
+          state = state.copyWith(minutePast: minute);
+          state = state.copyWith(blinkCount: 0);
+        }
+
+        if (convertedBlPM > 0.8) {
+          print("IS BLINKING $convertedBlPM");
+          state =
+              state.copyWith(blinkCount: state.blinkCount + 1, isBlink: true);
+          print("BLINK COUNT: ${state.blinkCount}");
+        } else {
+          state = state.copyWith(isBlink: false);
+        }
+        return BluetoothDataModel(
+          battery: receivedData[0],
+          blinkDuration: receivedData[1],
+          blinkCount: state.blinkCount.toString(),
+          ppgValue: receivedData[2],
+        );
+      }
     }
     return null;
   }

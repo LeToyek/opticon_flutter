@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/domain/model/blink_model.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_controller.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_state.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 // ignore: must_be_immutable
@@ -14,23 +15,36 @@ class BlinkChart extends ConsumerWidget {
     final blinksState = ref.watch(blinkControllerProvider);
     final size = MediaQuery.of(context).size;
 
+    ref.listen(
+        bluetoothControllerProvider.select<bool?>((value) => value.isBlink),
+        onBlink(ref));
+
     return switch (blinksState) {
       InitialBlinkState(blinks: final blinksInitial) =>
-        _buildChart(context, blinksInitial, 'Kedipan Per Menit', size),
+        _buildChart(context, blinksInitial, 'Kedipan Per Menit', size, ref),
       LoadingBlinkState(blinks: final blinks) =>
         // _buildChart(heartBeats),
         const CircularProgressIndicator(),
       LoadedBlinkState(blinks: final blinks) =>
-        _buildChart(context, blinks, 'Kedipan Per Menit', size),
+        _buildChart(context, blinks, 'Kedipan Per Menit', size, ref),
       ErrorBlinkState(message: final message) => Text(message)
     };
   }
 
-  Widget _buildChart(
-      context, List<BlinkModel> blinks, String title, Size size) {
+  Function(dynamic, dynamic) onBlink(WidgetRef ref) {
+    return (prev, next) {
+      print("prev: $prev, next: $next");
+      ref.read(blinkControllerProvider.notifier).getBlinkData(next!);
+    };
+  }
+
+  Widget _buildChart(context, List<BlinkModel> blinks, String title, Size size,
+      WidgetRef ref) {
     final width = size.width - 24;
     final height = size.height / 5;
     final colorScheme = Theme.of(context).colorScheme;
+    final blinkCount = ref
+        .watch(bluetoothControllerProvider.select((value) => value.blinkCount));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -98,7 +112,7 @@ class BlinkChart extends ConsumerWidget {
                     width: 8,
                   ),
                   Text(
-                    "${blinks.last.blinkValue.toString()} KPM",
+                    "${blinkCount.toString()} KPM",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 24,

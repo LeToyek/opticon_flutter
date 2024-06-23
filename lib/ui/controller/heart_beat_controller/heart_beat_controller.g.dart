@@ -7,7 +7,7 @@ part of 'heart_beat_controller.dart';
 // **************************************************************************
 
 String _$heartBeatControllerHash() =>
-    r'ed06ae4242ceaf65cb1bd7f17421f8e49466b054';
+    r'6593f16ed60292406e8c17f884dc729291f6ee38';
 
 /// See also [HeartBeatController].
 @ProviderFor(HeartBeatController)

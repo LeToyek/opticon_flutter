@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:opticon_flutter/domain/model/blink_model.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_state.dart';
 import 'package:opticon_flutter/utils/convert_string.dart';
@@ -12,7 +9,6 @@ part 'blink_controller.g.dart';
 class BlinkController extends _$BlinkController {
   @override
   BlinkState build() {
-    getDummyRealTimeHeartBeat();
     return InitialBlinkState(blinksInitial: [
       const BlinkModel(blinkValue: 0, createdAt: '00'),
       const BlinkModel(blinkValue: 0, createdAt: '01'),
@@ -28,19 +24,13 @@ class BlinkController extends _$BlinkController {
     ]);
   }
 
-  void getDummyRealTimeHeartBeat() {
-    Timer.periodic(const Duration(seconds: 1), (timer) async {
-      final blinks = state.blinks;
-      // state = LoadingHeartBeatState(heartBeats: [...heartBeats]);
-      blinks.removeAt(0);
-      blinks.add(BlinkModel(
-          blinkValue: generateRandomBinary(),
-          createdAt: extractSecond(DateTime.now().toString())));
-      state = LoadedBlinkState(blinks: [...blinks]);
-    });
-  }
-
-  int generateRandomBinary() {
-    return Random().nextInt(2);
+  void getBlinkData(bool isBlink) {
+    final blinks = state.blinks;
+    // state = LoadingHeartBeatState(heartBeats: [...heartBeats]);
+    blinks.removeAt(0);
+    blinks.add(BlinkModel(
+        blinkValue: isBlink ? 1 : 0,
+        createdAt: extractSecond(DateTime.now().toString())));
+    state = LoadedBlinkState(blinks: [...blinks]);
   }
 }
