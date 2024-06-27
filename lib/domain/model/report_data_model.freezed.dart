@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'heart_beat_model.dart';
+part of 'report_data_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,14 +14,18 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-HeartBeatModel _$HeartBeatModelFromJson(Map<String, dynamic> json) {
-  return _HeartBeatModel.fromJson(json);
+ReportDataModel _$ReportDataModelFromJson(Map<String, dynamic> json) {
+  return _ReportDataModel.fromJson(json);
 }
 
 /// @nodoc
-mixin _$HeartBeatModel {
+mixin _$ReportDataModel {
   @JsonKey(name: 'bpm_value')
   int? get bpmValue => throw _privateConstructorUsedError;
+  @JsonKey(name: 'blink_count')
+  int? get blinkCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'blink_duration')
+  double? get blinkDuration => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_prediction')
@@ -31,27 +35,29 @@ mixin _$HeartBeatModel {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $HeartBeatModelCopyWith<HeartBeatModel> get copyWith =>
+  $ReportDataModelCopyWith<ReportDataModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $HeartBeatModelCopyWith<$Res> {
-  factory $HeartBeatModelCopyWith(
-          HeartBeatModel value, $Res Function(HeartBeatModel) then) =
-      _$HeartBeatModelCopyWithImpl<$Res, HeartBeatModel>;
+abstract class $ReportDataModelCopyWith<$Res> {
+  factory $ReportDataModelCopyWith(
+          ReportDataModel value, $Res Function(ReportDataModel) then) =
+      _$ReportDataModelCopyWithImpl<$Res, ReportDataModel>;
   @useResult
   $Res call(
       {@JsonKey(name: 'bpm_value') int? bpmValue,
+      @JsonKey(name: 'blink_count') int? blinkCount,
+      @JsonKey(name: 'blink_duration') double? blinkDuration,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'is_prediction') String? isPrediction,
       @JsonKey(name: 'user_id') String? userId});
 }
 
 /// @nodoc
-class _$HeartBeatModelCopyWithImpl<$Res, $Val extends HeartBeatModel>
-    implements $HeartBeatModelCopyWith<$Res> {
-  _$HeartBeatModelCopyWithImpl(this._value, this._then);
+class _$ReportDataModelCopyWithImpl<$Res, $Val extends ReportDataModel>
+    implements $ReportDataModelCopyWith<$Res> {
+  _$ReportDataModelCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -62,6 +68,8 @@ class _$HeartBeatModelCopyWithImpl<$Res, $Val extends HeartBeatModel>
   @override
   $Res call({
     Object? bpmValue = freezed,
+    Object? blinkCount = freezed,
+    Object? blinkDuration = freezed,
     Object? createdAt = freezed,
     Object? isPrediction = freezed,
     Object? userId = freezed,
@@ -71,6 +79,14 @@ class _$HeartBeatModelCopyWithImpl<$Res, $Val extends HeartBeatModel>
           ? _value.bpmValue
           : bpmValue // ignore: cast_nullable_to_non_nullable
               as int?,
+      blinkCount: freezed == blinkCount
+          ? _value.blinkCount
+          : blinkCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      blinkDuration: freezed == blinkDuration
+          ? _value.blinkDuration
+          : blinkDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -88,41 +104,53 @@ class _$HeartBeatModelCopyWithImpl<$Res, $Val extends HeartBeatModel>
 }
 
 /// @nodoc
-abstract class _$$HeartBeatModelImplCopyWith<$Res>
-    implements $HeartBeatModelCopyWith<$Res> {
-  factory _$$HeartBeatModelImplCopyWith(_$HeartBeatModelImpl value,
-          $Res Function(_$HeartBeatModelImpl) then) =
-      __$$HeartBeatModelImplCopyWithImpl<$Res>;
+abstract class _$$ReportDataModelImplCopyWith<$Res>
+    implements $ReportDataModelCopyWith<$Res> {
+  factory _$$ReportDataModelImplCopyWith(_$ReportDataModelImpl value,
+          $Res Function(_$ReportDataModelImpl) then) =
+      __$$ReportDataModelImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
       {@JsonKey(name: 'bpm_value') int? bpmValue,
+      @JsonKey(name: 'blink_count') int? blinkCount,
+      @JsonKey(name: 'blink_duration') double? blinkDuration,
       @JsonKey(name: 'created_at') String? createdAt,
       @JsonKey(name: 'is_prediction') String? isPrediction,
       @JsonKey(name: 'user_id') String? userId});
 }
 
 /// @nodoc
-class __$$HeartBeatModelImplCopyWithImpl<$Res>
-    extends _$HeartBeatModelCopyWithImpl<$Res, _$HeartBeatModelImpl>
-    implements _$$HeartBeatModelImplCopyWith<$Res> {
-  __$$HeartBeatModelImplCopyWithImpl(
-      _$HeartBeatModelImpl _value, $Res Function(_$HeartBeatModelImpl) _then)
+class __$$ReportDataModelImplCopyWithImpl<$Res>
+    extends _$ReportDataModelCopyWithImpl<$Res, _$ReportDataModelImpl>
+    implements _$$ReportDataModelImplCopyWith<$Res> {
+  __$$ReportDataModelImplCopyWithImpl(
+      _$ReportDataModelImpl _value, $Res Function(_$ReportDataModelImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? bpmValue = freezed,
+    Object? blinkCount = freezed,
+    Object? blinkDuration = freezed,
     Object? createdAt = freezed,
     Object? isPrediction = freezed,
     Object? userId = freezed,
   }) {
-    return _then(_$HeartBeatModelImpl(
+    return _then(_$ReportDataModelImpl(
       bpmValue: freezed == bpmValue
           ? _value.bpmValue
           : bpmValue // ignore: cast_nullable_to_non_nullable
               as int?,
+      blinkCount: freezed == blinkCount
+          ? _value.blinkCount
+          : blinkCount // ignore: cast_nullable_to_non_nullable
+              as int?,
+      blinkDuration: freezed == blinkDuration
+          ? _value.blinkDuration
+          : blinkDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -141,19 +169,27 @@ class __$$HeartBeatModelImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$HeartBeatModelImpl implements _HeartBeatModel {
-  const _$HeartBeatModelImpl(
+class _$ReportDataModelImpl implements _ReportDataModel {
+  _$ReportDataModelImpl(
       {@JsonKey(name: 'bpm_value') this.bpmValue,
+      @JsonKey(name: 'blink_count') this.blinkCount,
+      @JsonKey(name: 'blink_duration') this.blinkDuration,
       @JsonKey(name: 'created_at') this.createdAt,
       @JsonKey(name: 'is_prediction') this.isPrediction,
       @JsonKey(name: 'user_id') this.userId});
 
-  factory _$HeartBeatModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$HeartBeatModelImplFromJson(json);
+  factory _$ReportDataModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ReportDataModelImplFromJson(json);
 
   @override
   @JsonKey(name: 'bpm_value')
   final int? bpmValue;
+  @override
+  @JsonKey(name: 'blink_count')
+  final int? blinkCount;
+  @override
+  @JsonKey(name: 'blink_duration')
+  final double? blinkDuration;
   @override
   @JsonKey(name: 'created_at')
   final String? createdAt;
@@ -166,16 +202,20 @@ class _$HeartBeatModelImpl implements _HeartBeatModel {
 
   @override
   String toString() {
-    return 'HeartBeatModel(bpmValue: $bpmValue, createdAt: $createdAt, isPrediction: $isPrediction, userId: $userId)';
+    return 'ReportDataModel(bpmValue: $bpmValue, blinkCount: $blinkCount, blinkDuration: $blinkDuration, createdAt: $createdAt, isPrediction: $isPrediction, userId: $userId)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$HeartBeatModelImpl &&
+            other is _$ReportDataModelImpl &&
             (identical(other.bpmValue, bpmValue) ||
                 other.bpmValue == bpmValue) &&
+            (identical(other.blinkCount, blinkCount) ||
+                other.blinkCount == blinkCount) &&
+            (identical(other.blinkDuration, blinkDuration) ||
+                other.blinkDuration == blinkDuration) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.isPrediction, isPrediction) ||
@@ -185,37 +225,45 @@ class _$HeartBeatModelImpl implements _HeartBeatModel {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, bpmValue, createdAt, isPrediction, userId);
+  int get hashCode => Object.hash(runtimeType, bpmValue, blinkCount,
+      blinkDuration, createdAt, isPrediction, userId);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$HeartBeatModelImplCopyWith<_$HeartBeatModelImpl> get copyWith =>
-      __$$HeartBeatModelImplCopyWithImpl<_$HeartBeatModelImpl>(
+  _$$ReportDataModelImplCopyWith<_$ReportDataModelImpl> get copyWith =>
+      __$$ReportDataModelImplCopyWithImpl<_$ReportDataModelImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$HeartBeatModelImplToJson(
+    return _$$ReportDataModelImplToJson(
       this,
     );
   }
 }
 
-abstract class _HeartBeatModel implements HeartBeatModel {
-  const factory _HeartBeatModel(
+abstract class _ReportDataModel implements ReportDataModel {
+  factory _ReportDataModel(
       {@JsonKey(name: 'bpm_value') final int? bpmValue,
+      @JsonKey(name: 'blink_count') final int? blinkCount,
+      @JsonKey(name: 'blink_duration') final double? blinkDuration,
       @JsonKey(name: 'created_at') final String? createdAt,
       @JsonKey(name: 'is_prediction') final String? isPrediction,
-      @JsonKey(name: 'user_id') final String? userId}) = _$HeartBeatModelImpl;
+      @JsonKey(name: 'user_id') final String? userId}) = _$ReportDataModelImpl;
 
-  factory _HeartBeatModel.fromJson(Map<String, dynamic> json) =
-      _$HeartBeatModelImpl.fromJson;
+  factory _ReportDataModel.fromJson(Map<String, dynamic> json) =
+      _$ReportDataModelImpl.fromJson;
 
   @override
   @JsonKey(name: 'bpm_value')
   int? get bpmValue;
+  @override
+  @JsonKey(name: 'blink_count')
+  int? get blinkCount;
+  @override
+  @JsonKey(name: 'blink_duration')
+  double? get blinkDuration;
   @override
   @JsonKey(name: 'created_at')
   String? get createdAt;
@@ -227,6 +275,6 @@ abstract class _HeartBeatModel implements HeartBeatModel {
   String? get userId;
   @override
   @JsonKey(ignore: true)
-  _$$HeartBeatModelImplCopyWith<_$HeartBeatModelImpl> get copyWith =>
+  _$$ReportDataModelImplCopyWith<_$ReportDataModelImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

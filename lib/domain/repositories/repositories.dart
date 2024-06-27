@@ -18,8 +18,8 @@ HeartBeatRepository heartBeatRepository(HeartBeatRepositoryRef ref) =>
     HeartBeatRepository(ref.watch(iotApiClientProvider));
 
 @riverpod
-ReportRepository reportRepository(ReportRepositoryRef ref) =>
-    ReportRepository(ref.watch(iotApiClientProvider));
+ReportRepository reportRepository(ReportRepositoryRef ref) => ReportRepository(
+    ref.watch(iotApiClientProvider), ref.watch(firebaseFirestoreProvider));
 
 @riverpod
 UserRepository userRepository(UserRepositoryRef ref) =>
@@ -27,7 +27,7 @@ UserRepository userRepository(UserRepositoryRef ref) =>
 
 @riverpod
 BluetoothRepository bluetoothRepository(BluetoothRepositoryRef ref) =>
-    BluetoothRepository(ref.watch(flutterBluetoothSerialProvider));
+    BluetoothRepository(ref.watch(firebaseFirestoreProvider));
 
 @riverpod
 PredicitonRepository predictionRepository(PredictionRepositoryRef ref) =>

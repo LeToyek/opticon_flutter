@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:opticon_flutter/application/report_service.dart';
+import 'package:opticon_flutter/application/services.dart';
+import 'package:opticon_flutter/datasources/datasources.dart';
 import 'package:opticon_flutter/domain/model/bluetooth_data_model.dart';
+import 'package:opticon_flutter/domain/model/report_data_model.dart';
 import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,6 +18,9 @@ part 'bluetooth_controller.g.dart';
 @riverpod
 class BluetoothController extends _$BluetoothController {
   final FlutterBluetoothSerial _bluetooth = FlutterBluetoothSerial.instance;
+  ReportService get _reportService => ref.read(reportServiceProvider);
+  FirebaseAuth get _auth => ref.read(firebaseAuthProvider);
+
   StreamSubscription? _bluetoothSubscription;
   StreamSubscription? _connectionSubscription;
   @override
@@ -107,34 +115,41 @@ class BluetoothController extends _$BluetoothController {
   }
 
   Future<void> connect() async {
-    state = state.copyWith(isButtonUnavailable: true);
-    if (state.bluetoothDevice == null) {
-      state = state.copyWith(message: 'No device selected');
-    } else {
-      // if (connection == null || (connection != null && !isConnected!)) {
-      if (!state.isConnected) {
-        final conn =
-            await BluetoothConnection.toAddress(state.bluetoothDevice?.address);
-        debugPrint('Connected to the device');
-        state = state.copyWith(connection: conn);
+    try {
+      state = state.copyWith(isButtonUnavailable: true);
+      if (state.bluetoothDevice == null) {
+        state = state.copyWith(message: 'No device selected');
+      } else {
+        // if (connection == null || (connection != null && !isConnected!)) {
+        if (!state.isConnected) {
+          final conn = await BluetoothConnection.toAddress(
+              state.bluetoothDevice?.address);
+          debugPrint('Connected to the device');
+          state = state.copyWith(connection: conn);
 
-        _connectionSubscription = conn.input?.listen(onData);
-        state = state.copyWith(
-            message: 'Device connected', isButtonUnavailable: false);
+          _connectionSubscription = conn.input?.listen(onData);
+          state = state.copyWith(
+              message: 'Device connected', isButtonUnavailable: false);
+        }
       }
+    } catch (e) {
+      state = state.copyWith(
+          errorMessage: 'Error occurred while connecting. Try again!');
+      await Future.delayed(const Duration(seconds: 3));
+      state = state.copyWith(errorMessage: '');
     }
   }
 
-  onData(Uint8List data) {
+  onData(Uint8List data) async {
     // final dataString = utf8.decode(data);
     // print(dataString);
-    final dataReceived = _fromHexData(data);
+    final dataReceived = await _fromHexData(data);
     if (dataReceived != null) {
       state = state.copyWith(btData: dataReceived);
     }
   }
 
-  BluetoothDataModel? _fromHexData(Uint8List data) {
+  Future<BluetoothDataModel?> _fromHexData(Uint8List data) async {
     String hexData = String.fromCharCodes(data);
     List<String> dataList =
         hexData.split(',').where((element) => element.isNotEmpty).toList();
@@ -158,8 +173,19 @@ class BluetoothController extends _$BluetoothController {
         final now = DateTime.now();
         final minute = now.minute;
         if (minute != state.minutePast) {
-          state = state.copyWith(minutePast: minute);
-          state = state.copyWith(blinkCount: 0);
+          try {
+            await _reportService.postReportData(ReportDataModel(
+              blinkCount: state.blinkCount,
+              bpmValue: int.tryParse(receivedData[2])!,
+              blinkDuration: 90,
+              userId: _auth.currentUser!.uid,
+              createdAt: now.toString(),
+            ));
+          } catch (e) {
+            state = state.copyWith(
+                errorMessage: 'Error occurred while posting data');
+          }
+          state = state.copyWith(minutePast: minute, blinkCount: 0);
         }
 
         if (convertedBlPM > 0.8) {
@@ -170,6 +196,10 @@ class BluetoothController extends _$BluetoothController {
         } else {
           state = state.copyWith(isBlink: false);
         }
+        state = state.copyWith(
+          blpmList: [...state.blpmList],
+        );
+
         return BluetoothDataModel(
           battery: receivedData[0],
           blinkDuration: receivedData[1],

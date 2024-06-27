@@ -39,7 +39,7 @@ final heartBeatRepositoryProvider =
 );
 
 typedef HeartBeatRepositoryRef = AutoDisposeProviderRef<HeartBeatRepository>;
-String _$reportRepositoryHash() => r'4650833f10655f129c8eb2b43d6b3598807c0685';
+String _$reportRepositoryHash() => r'4ad0a79b00d7ea981cf09e7963f6d7ce741e180b';
 
 /// See also [reportRepository].
 @ProviderFor(reportRepository)
@@ -70,7 +70,7 @@ final userRepositoryProvider = AutoDisposeProvider<UserRepository>.internal(
 
 typedef UserRepositoryRef = AutoDisposeProviderRef<UserRepository>;
 String _$bluetoothRepositoryHash() =>
-    r'587186595a7addfba5cbfdae48857771b3dd7509';
+    r'5e2af5dbb05b378bf0ec12b8be786fe5bca56961';
 
 /// See also [bluetoothRepository].
 @ProviderFor(bluetoothRepository)

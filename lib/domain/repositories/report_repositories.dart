@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:opticon_flutter/datasources/iot_api_client.dart';
 import 'package:opticon_flutter/domain/model/blink_model.dart';
 import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
+import 'package:opticon_flutter/domain/model/report_data_model.dart';
 import 'package:opticon_flutter/domain/model/report_model.dart';
 
 abstract class ReportRepositoryImpl {
@@ -11,8 +13,9 @@ abstract class ReportRepositoryImpl {
 
 class ReportRepository implements ReportRepositoryImpl {
   final IotApiClient _iotApiClient;
+  final FirebaseFirestore _firestore;
 
-  ReportRepository(this._iotApiClient);
+  ReportRepository(this._iotApiClient, this._firestore);
 
   @override
   Future<ReportModel> getReportHours() async {
@@ -75,5 +78,15 @@ class ReportRepository implements ReportRepositoryImpl {
   Future<ReportModel> getReportMonths() {
     // TODO: implement getReportMonths
     throw UnimplementedError();
+  }
+
+  Future<void> postReportData(ReportDataModel reportDataModel) async {
+    try {
+      final res = await _firestore.collection('reports').add(
+            reportDataModel.toJson(),
+          );
+    } catch (e) {
+      rethrow;
+    }
   }
 }

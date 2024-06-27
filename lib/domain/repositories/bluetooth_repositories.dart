@@ -1,11 +1,6 @@
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BluetoothRepository {
-  final FlutterBluetoothSerial _flutterBluetoothSerial;
-
-  BluetoothRepository(this._flutterBluetoothSerial);
-
-  Future<void> enableBluetooth() async {
-    await _flutterBluetoothSerial.requestEnable();
-  }
+  final FirebaseFirestore _firestore;
+  BluetoothRepository(this._firestore);
 }

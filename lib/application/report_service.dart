@@ -1,3 +1,4 @@
+import 'package:opticon_flutter/domain/model/report_data_model.dart';
 import 'package:opticon_flutter/domain/model/report_model.dart';
 import 'package:opticon_flutter/domain/repositories/report_repositories.dart';
 
@@ -25,5 +26,13 @@ class ReportService implements ReportServiceImpl {
   @override
   Future<ReportModel> getReportMonths() {
     return _reportRepository.getReportMonths();
+  }
+
+  Future<void> postReportData(ReportDataModel reportDataModel) async {
+    try {
+      return await _reportRepository.postReportData(reportDataModel);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

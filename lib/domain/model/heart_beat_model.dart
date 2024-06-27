@@ -9,6 +9,7 @@ class HeartBeatModel with _$HeartBeatModel {
     @JsonKey(name: 'bpm_value') int? bpmValue,
     @JsonKey(name: 'created_at') String? createdAt,
     @JsonKey(name: 'is_prediction') String? isPrediction,
+    @JsonKey(name: 'user_id') String? userId,
   }) = _HeartBeatModel;
 
   factory HeartBeatModel.fromJson(Map<String, dynamic> json) =>

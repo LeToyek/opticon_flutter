@@ -59,6 +59,11 @@ class _QRPageState extends ConsumerState<QRPage> {
     ref.listen(
         bluetoothControllerProvider.select<String?>((value) => value.message),
         onMessage);
+
+    ref.listen(
+      bluetoothControllerProvider.select((value) => value.errorMessage),
+      onError,
+    );
     return MaterialApp(
       home: Scaffold(
           key: _scaffoldKey,
@@ -76,7 +81,8 @@ class _QRPageState extends ConsumerState<QRPage> {
                       repeat: true,
                       color: state.isConnected
                           ? colorScheme.surfaceVariant
-                          : state.isButtonUnavailable
+                          : state.isButtonUnavailable &&
+                                  state.errorMessage.isEmpty
                               ? Colors.blue
                               : colorScheme.primary,
                       minRadius: 90,
@@ -85,7 +91,8 @@ class _QRPageState extends ConsumerState<QRPage> {
                       child: CircleAvatar(
                         backgroundColor: state.isConnected
                             ? colorScheme.surfaceVariant
-                            : state.isButtonUnavailable
+                            : state.isButtonUnavailable &&
+                                    state.errorMessage.isEmpty
                                 ? Colors.blue
                                 : colorScheme.primary,
                         radius: 100,
@@ -122,6 +129,12 @@ class _QRPageState extends ConsumerState<QRPage> {
               ),
             ),
           )),
+    );
+  }
+
+  void onError(previous, next) {
+    show(
+      next,
     );
   }
 
@@ -337,6 +350,7 @@ class _QRPageState extends ConsumerState<QRPage> {
   // taking message as the text
   Future show(
     String message, {
+    bool isError = false,
     Duration duration = const Duration(seconds: 3),
   }) async {
     await Future.delayed(const Duration(milliseconds: 100));
@@ -350,6 +364,7 @@ class _QRPageState extends ConsumerState<QRPage> {
     // );
     ScaffoldMessenger.of(_scaffoldKey.currentContext!).showSnackBar(
       SnackBar(
+        backgroundColor: isError ? Colors.red : null,
         content: Text(
           message,
         ),
