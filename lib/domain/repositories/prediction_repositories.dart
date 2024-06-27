@@ -25,20 +25,4 @@ class PredicitonRepository {
 
     return Future.value(heartBeatsMinutes);
   }
-
-  // Future<List<BlinkModel>> blinkPredict() async {
-  //   final currentTime = DateTime.now();
-  //   var lastTime = currentTime.add(const Duration(minutes: 10));
-
-  //   List<BlinkModel> blinkMinutes = [];
-
-  //   final randomValBlink = [10, 21, 17, 18, 20, 15, 12, 10, 16, 14];
-
-  //   for (int i = 0; i < randomValBlink.length; i++) {
-  //     lastTime = lastTime.add(const Duration(minutes: 10));
-  //     blinkMinutes.add();
-  //   }
-
-  //   return Future.value(heartBeatsMinutes);
-  // }
 }

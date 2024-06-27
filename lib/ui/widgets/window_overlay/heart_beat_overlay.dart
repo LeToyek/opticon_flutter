@@ -3,6 +3,7 @@ import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_controller.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_state.dart';
+import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_state.dart';
 
@@ -106,17 +107,19 @@ class _HeartBeatOverlayState extends ConsumerState<HeartBeatOverlay> {
     );
   }
 
-  Widget buildText(List<dynamic> data) {
+  Widget buildText() {
+    final btState =
+        ref.watch(bluetoothControllerProvider.select((value) => value.btData));
     if (_overlayModuleState == OverlayModuleState.blink) {
       return Text(
-        "${data.last.blinkValue} KPM",
+        "${btState?.blinkCount} KPM",
         style: const TextStyle(
             color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
       );
     }
 
     return Text(
-      "${data.last.bpmValue} BPM",
+      "${btState?.ppgValue} BPM",
       style: const TextStyle(
           color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
     );
@@ -128,18 +131,15 @@ class _HeartBeatOverlayState extends ConsumerState<HeartBeatOverlay> {
     return switch (_overlayModuleState) {
       OverlayModuleState.heartBeat => switch (heartBeatsState) {
           InitialHeartBeatState(heartBeats: final heartBeatsInitial) =>
-            buildText(heartBeatsInitial),
-          LoadingHeartBeatState(heartBeats: final heartBeats) =>
-            buildText(heartBeats),
-          LoadedHeartBeatState(heartBeats: final heartBeats) =>
-            buildText(heartBeats),
+            buildText(),
+          LoadingHeartBeatState(heartBeats: final heartBeats) => buildText(),
+          LoadedHeartBeatState(heartBeats: final heartBeats) => buildText(),
           ErrorHeartBeatState(message: final message) => Text(message)
         },
       OverlayModuleState.blink => switch (blinkState) {
-          InitialBlinkState(blinks: final blinksInitial) =>
-            buildText(blinksInitial),
-          LoadingBlinkState(blinks: final blinks) => buildText(blinks),
-          LoadedBlinkState(blinks: final blinks) => buildText(blinks),
+          InitialBlinkState(blinks: final blinksInitial) => buildText(),
+          LoadingBlinkState(blinks: final blinks) => buildText(),
+          LoadedBlinkState(blinks: final blinks) => buildText(),
           ErrorBlinkState(message: final message) => Text(message)
         }
     };

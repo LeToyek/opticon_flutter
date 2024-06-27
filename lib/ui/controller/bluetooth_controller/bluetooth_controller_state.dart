@@ -19,6 +19,9 @@ class BluetoothControllerState with _$BluetoothControllerState {
       @Default(0) int blinkCount,
       @Default(false) bool isBlink,
       @Default(0) int minutePast,
+      @Default("") String errorMessage,
+      @Default([]) List<int> blpmList,
+      @Default([]) List<int> bpmList,
       @Default(false) bool isButtonUnavailable}) = _BluetoothControllerState;
 
   bool get isConnected => connection != null && connection!.isConnected;

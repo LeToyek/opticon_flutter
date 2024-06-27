@@ -5,7 +5,5 @@ class BluetoothService {
 
   BluetoothService(this._bluetoothRepository);
 
-  Future<void> enableBluetooth() async {
-    await _bluetoothRepository.enableBluetooth();
-  }
+  Future<void> enableBluetooth() async {}
 }
