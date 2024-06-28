@@ -26,9 +26,12 @@ mixin _$BluetoothControllerState {
   int get blinkCount => throw _privateConstructorUsedError;
   bool get isBlink => throw _privateConstructorUsedError;
   int get minutePast => throw _privateConstructorUsedError;
+  int get prevBlinkCount => throw _privateConstructorUsedError;
+  int get highestBlinkDuration => throw _privateConstructorUsedError;
   String get errorMessage => throw _privateConstructorUsedError;
   List<int> get blpmList => throw _privateConstructorUsedError;
   List<int> get bpmList => throw _privateConstructorUsedError;
+  int get prevKPM => throw _privateConstructorUsedError;
   bool get isButtonUnavailable => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -53,9 +56,12 @@ abstract class $BluetoothControllerStateCopyWith<$Res> {
       int blinkCount,
       bool isBlink,
       int minutePast,
+      int prevBlinkCount,
+      int highestBlinkDuration,
       String errorMessage,
       List<int> blpmList,
       List<int> bpmList,
+      int prevKPM,
       bool isButtonUnavailable});
 }
 
@@ -83,9 +89,12 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
     Object? blinkCount = null,
     Object? isBlink = null,
     Object? minutePast = null,
+    Object? prevBlinkCount = null,
+    Object? highestBlinkDuration = null,
     Object? errorMessage = null,
     Object? blpmList = null,
     Object? bpmList = null,
+    Object? prevKPM = null,
     Object? isButtonUnavailable = null,
   }) {
     return _then(_value.copyWith(
@@ -129,6 +138,14 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
           ? _value.minutePast
           : minutePast // ignore: cast_nullable_to_non_nullable
               as int,
+      prevBlinkCount: null == prevBlinkCount
+          ? _value.prevBlinkCount
+          : prevBlinkCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      highestBlinkDuration: null == highestBlinkDuration
+          ? _value.highestBlinkDuration
+          : highestBlinkDuration // ignore: cast_nullable_to_non_nullable
+              as int,
       errorMessage: null == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -141,6 +158,10 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
           ? _value.bpmList
           : bpmList // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      prevKPM: null == prevKPM
+          ? _value.prevKPM
+          : prevKPM // ignore: cast_nullable_to_non_nullable
+              as int,
       isButtonUnavailable: null == isButtonUnavailable
           ? _value.isButtonUnavailable
           : isButtonUnavailable // ignore: cast_nullable_to_non_nullable
@@ -169,9 +190,12 @@ abstract class _$$BluetoothControllerStateImplCopyWith<$Res>
       int blinkCount,
       bool isBlink,
       int minutePast,
+      int prevBlinkCount,
+      int highestBlinkDuration,
       String errorMessage,
       List<int> blpmList,
       List<int> bpmList,
+      int prevKPM,
       bool isButtonUnavailable});
 }
 
@@ -198,9 +222,12 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
     Object? blinkCount = null,
     Object? isBlink = null,
     Object? minutePast = null,
+    Object? prevBlinkCount = null,
+    Object? highestBlinkDuration = null,
     Object? errorMessage = null,
     Object? blpmList = null,
     Object? bpmList = null,
+    Object? prevKPM = null,
     Object? isButtonUnavailable = null,
   }) {
     return _then(_$BluetoothControllerStateImpl(
@@ -244,6 +271,14 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
           ? _value.minutePast
           : minutePast // ignore: cast_nullable_to_non_nullable
               as int,
+      prevBlinkCount: null == prevBlinkCount
+          ? _value.prevBlinkCount
+          : prevBlinkCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      highestBlinkDuration: null == highestBlinkDuration
+          ? _value.highestBlinkDuration
+          : highestBlinkDuration // ignore: cast_nullable_to_non_nullable
+              as int,
       errorMessage: null == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -256,6 +291,10 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
           ? _value._bpmList
           : bpmList // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      prevKPM: null == prevKPM
+          ? _value.prevKPM
+          : prevKPM // ignore: cast_nullable_to_non_nullable
+              as int,
       isButtonUnavailable: null == isButtonUnavailable
           ? _value.isButtonUnavailable
           : isButtonUnavailable // ignore: cast_nullable_to_non_nullable
@@ -278,9 +317,12 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
       this.blinkCount = 0,
       this.isBlink = false,
       this.minutePast = 0,
+      this.prevBlinkCount = 0,
+      this.highestBlinkDuration = 0,
       this.errorMessage = "",
       final List<int> blpmList = const [],
       final List<int> bpmList = const [],
+      this.prevKPM = 0,
       this.isButtonUnavailable = false})
       : _devicesList = devicesList,
         _blpmList = blpmList,
@@ -319,6 +361,12 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
   final int minutePast;
   @override
   @JsonKey()
+  final int prevBlinkCount;
+  @override
+  @JsonKey()
+  final int highestBlinkDuration;
+  @override
+  @JsonKey()
   final String errorMessage;
   final List<int> _blpmList;
   @override
@@ -340,11 +388,14 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
 
   @override
   @JsonKey()
+  final int prevKPM;
+  @override
+  @JsonKey()
   final bool isButtonUnavailable;
 
   @override
   String toString() {
-    return 'BluetoothControllerState(bluetoothDevice: $bluetoothDevice, bluetoothState: $bluetoothState, deviceState: $deviceState, devicesList: $devicesList, connection: $connection, message: $message, btData: $btData, blinkCount: $blinkCount, isBlink: $isBlink, minutePast: $minutePast, errorMessage: $errorMessage, blpmList: $blpmList, bpmList: $bpmList, isButtonUnavailable: $isButtonUnavailable)';
+    return 'BluetoothControllerState(bluetoothDevice: $bluetoothDevice, bluetoothState: $bluetoothState, deviceState: $deviceState, devicesList: $devicesList, connection: $connection, message: $message, btData: $btData, blinkCount: $blinkCount, isBlink: $isBlink, minutePast: $minutePast, prevBlinkCount: $prevBlinkCount, highestBlinkDuration: $highestBlinkDuration, errorMessage: $errorMessage, blpmList: $blpmList, bpmList: $bpmList, prevKPM: $prevKPM, isButtonUnavailable: $isButtonUnavailable)';
   }
 
   @override
@@ -369,10 +420,15 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
             (identical(other.isBlink, isBlink) || other.isBlink == isBlink) &&
             (identical(other.minutePast, minutePast) ||
                 other.minutePast == minutePast) &&
+            (identical(other.prevBlinkCount, prevBlinkCount) ||
+                other.prevBlinkCount == prevBlinkCount) &&
+            (identical(other.highestBlinkDuration, highestBlinkDuration) ||
+                other.highestBlinkDuration == highestBlinkDuration) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
             const DeepCollectionEquality().equals(other._blpmList, _blpmList) &&
             const DeepCollectionEquality().equals(other._bpmList, _bpmList) &&
+            (identical(other.prevKPM, prevKPM) || other.prevKPM == prevKPM) &&
             (identical(other.isButtonUnavailable, isButtonUnavailable) ||
                 other.isButtonUnavailable == isButtonUnavailable));
   }
@@ -390,9 +446,12 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
       blinkCount,
       isBlink,
       minutePast,
+      prevBlinkCount,
+      highestBlinkDuration,
       errorMessage,
       const DeepCollectionEquality().hash(_blpmList),
       const DeepCollectionEquality().hash(_bpmList),
+      prevKPM,
       isButtonUnavailable);
 
   @JsonKey(ignore: true)
@@ -415,9 +474,12 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
       final int blinkCount,
       final bool isBlink,
       final int minutePast,
+      final int prevBlinkCount,
+      final int highestBlinkDuration,
       final String errorMessage,
       final List<int> blpmList,
       final List<int> bpmList,
+      final int prevKPM,
       final bool isButtonUnavailable}) = _$BluetoothControllerStateImpl;
   _BluetoothControllerState._() : super._();
 
@@ -442,11 +504,17 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
   @override
   int get minutePast;
   @override
+  int get prevBlinkCount;
+  @override
+  int get highestBlinkDuration;
+  @override
   String get errorMessage;
   @override
   List<int> get blpmList;
   @override
   List<int> get bpmList;
+  @override
+  int get prevKPM;
   @override
   bool get isButtonUnavailable;
   @override

@@ -15,7 +15,24 @@ class ReportService implements ReportServiceImpl {
 
   @override
   Future<ReportModel> getReportDays() async {
-    return await _reportRepository.getReportDays();
+    try {
+      final res = await _reportRepository.getAverageBpmForToday();
+      final today = DateTime.now();
+      if (res != null) {
+        return ReportModel(
+            avgBPMValue: 90,
+            avgBlinkValue: int.parse(res.avgBlPM.floor().toString()),
+            createdAt: today.toString(),
+            reportData: res.reports);
+      }
+      return ReportModel(
+        avgBPMValue: 90,
+        avgBlinkValue: 10,
+        createdAt: today.toString(),
+      );
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

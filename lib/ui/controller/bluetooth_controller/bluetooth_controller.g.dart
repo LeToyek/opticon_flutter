@@ -7,7 +7,7 @@ part of 'bluetooth_controller.dart';
 // **************************************************************************
 
 String _$bluetoothControllerHash() =>
-    r'6ab53bb61a0856ae7bb880801a88d261d48af931';
+    r'e019f8375145d83c7fc12823bb74bdb21d3c7f24';
 
 /// See also [BluetoothController].
 @ProviderFor(BluetoothController)

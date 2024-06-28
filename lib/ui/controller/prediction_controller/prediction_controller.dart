@@ -17,10 +17,5 @@ class PredictionController extends _$PredictionController {
   void fetchPrediction() async {
     state = LoadingPredictionState();
     final heartBeatData = await _service.heartBeatPredict();
-
-    Future.delayed(const Duration(seconds: 5), () {
-      // state = LoadedPredictionState(report: data);
-      // state = LoadedPredictionState(predictModel: data);
-    });
   }
 }

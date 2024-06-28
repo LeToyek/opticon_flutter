@@ -39,7 +39,7 @@ final heartBeatRepositoryProvider =
 );
 
 typedef HeartBeatRepositoryRef = AutoDisposeProviderRef<HeartBeatRepository>;
-String _$reportRepositoryHash() => r'4ad0a79b00d7ea981cf09e7963f6d7ce741e180b';
+String _$reportRepositoryHash() => r'12e75d26324ec383c32551dc3628722ee4d02127';
 
 /// See also [reportRepository].
 @ProviderFor(reportRepository)
