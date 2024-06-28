@@ -19,7 +19,9 @@ HeartBeatRepository heartBeatRepository(HeartBeatRepositoryRef ref) =>
 
 @riverpod
 ReportRepository reportRepository(ReportRepositoryRef ref) => ReportRepository(
-    ref.watch(iotApiClientProvider), ref.watch(firebaseFirestoreProvider));
+    ref.watch(iotApiClientProvider),
+    ref.watch(firebaseFirestoreProvider),
+    ref.watch(firebaseAuthProvider));
 
 @riverpod
 UserRepository userRepository(UserRepositoryRef ref) =>

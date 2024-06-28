@@ -7,7 +7,7 @@ part of 'prediction_controller.dart';
 // **************************************************************************
 
 String _$predictionControllerHash() =>
-    r'd36869c9eeb2835343b69b0b3e7b564e12c3448b';
+    r'e093fb0e4748f92c05b3bd98619b362c451684e1';
 
 /// See also [PredictionController].
 @ProviderFor(PredictionController)

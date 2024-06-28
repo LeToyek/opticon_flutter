@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:opticon_flutter/domain/model/blink_model.dart';
 import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
+import 'package:opticon_flutter/domain/model/report_data_model.dart';
 import 'package:opticon_flutter/ui/controller/report_controller/report_controller.dart';
 import 'package:opticon_flutter/ui/controller/report_controller/report_state.dart';
 import 'package:opticon_flutter/ui/pages/prediction_page/prediciton_page.dart';
@@ -18,6 +18,7 @@ class LaporanPage extends ConsumerWidget {
     final reportState = ref.watch(reportControllerProvider);
     final size = MediaQuery.of(context).size;
     final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: colorScheme.primary,
@@ -86,6 +87,91 @@ class LaporanPage extends ConsumerWidget {
                                 icon: Ionicons.time_outline)
                           ],
                         ),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Kedipan Mata Per Menit',
+                            style: textTheme.titleMedium!.apply(
+                                color: colorScheme.onBackground,
+                                fontWeightDelta: 2),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SizedBox(
+                            // width: MediaQuery.of(context).size.width * 0.8,
+                            height: MediaQuery.of(context).size.height / 4,
+                            child: SfCartesianChart(
+                                legend: const Legend(
+                                  isVisible: true,
+                                  textStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                tooltipBehavior: TooltipBehavior(
+                                    enable: true,
+                                    header: "Kedipan Mata",
+                                    format: 'point.y KPM'),
+                                primaryXAxis: const CategoryAxis(
+                                  isVisible: true,
+                                  labelStyle: TextStyle(
+                                      color: Colors.black, fontSize: 12),
+                                ),
+                                primaryYAxis: const NumericAxis(
+                                  isVisible: true,
+                                  labelStyle: TextStyle(
+                                      color: Colors.black, fontSize: 12),
+                                ),
+                                series: <CartesianSeries<ReportDataModel,
+                                    String>>[
+                                  AreaSeries<ReportDataModel, String>(
+                                    // color: colorScheme.surfaceVariant,
+                                    name: 'Kedipan Mata',
+                                    animationDuration: 500,
+                                    borderWidth: 2,
+                                    borderColor: colorScheme.surfaceVariant,
+                                    color: colorScheme.surfaceVariant
+                                        .withOpacity(0.3),
+                                    dataSource: report.reportData ?? [],
+                                    xValueMapper: (ReportDataModel data, _) =>
+                                        convertDateTimeToMinute(
+                                            data.createdAt!),
+                                    yValueMapper: (ReportDataModel data, _) =>
+                                        data.blinkCount ?? 0,
+                                  ),
+                                  // add average bpm
+
+                                  LineSeries<ReportDataModel, String>(
+                                    color: colorScheme.primary,
+                                    enableTooltip: true,
+                                    name: 'Rata-rata',
+                                    dataSource: report.reportData ?? [],
+                                    xValueMapper: (ReportDataModel data, _) =>
+                                        convertDateTimeToMinute(
+                                            data.createdAt!),
+                                    yValueMapper: (ReportDataModel data, _) =>
+                                        report.avgBlinkValue ?? 0,
+                                  ),
+                                ]),
+                          ),
+                          Row(
+                            children: [
+                              _buildItemResult(context,
+                                  itemIndex: "12 KPM",
+                                  label: "Avg KPM",
+                                  icon: Ionicons.eye_outline),
+                              _buildItemResult(context,
+                                  itemIndex: "0.4 detik",
+                                  label: "Blink Duration",
+                                  icon: Ionicons.eye_outline),
+                            ],
+                          )
+                        ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,89 +246,6 @@ class LaporanPage extends ConsumerWidget {
                                   itemIndex: "81 BPM",
                                   label: "Avg BPM",
                                   icon: Ionicons.heart_outline)
-                            ],
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Kedipan Mata Per Menit',
-                            style: textTheme.titleMedium!.apply(
-                                color: colorScheme.onBackground,
-                                fontWeightDelta: 2),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SizedBox(
-                            // width: MediaQuery.of(context).size.width * 0.8,
-                            height: MediaQuery.of(context).size.height / 4,
-                            child: SfCartesianChart(
-                                legend: const Legend(
-                                  isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                tooltipBehavior: TooltipBehavior(
-                                    enable: true,
-                                    header: "Kedipan Mata",
-                                    format: 'point.y KPM'),
-                                primaryXAxis: const CategoryAxis(
-                                  isVisible: true,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ),
-                                primaryYAxis: const NumericAxis(
-                                  isVisible: true,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ),
-                                series: <CartesianSeries<BlinkModel, String>>[
-                                  ColumnSeries<BlinkModel, String>(
-                                    color: colorScheme.surfaceVariant,
-                                    name: 'Kedipan Mata',
-                                    animationDuration: 500,
-                                    enableTooltip: true,
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                    dataSource: report.blinkModels ?? [],
-                                    xValueMapper: (BlinkModel data, _) =>
-                                        convertDateTimeToMinute(
-                                            data.createdAt!),
-                                    yValueMapper: (BlinkModel data, _) =>
-                                        data.blinkValue,
-                                  ),
-                                  // add average bpm
-
-                                  LineSeries<BlinkModel, String>(
-                                    color: colorScheme.primary,
-                                    enableTooltip: true,
-                                    name: 'Rata-rata',
-                                    dataSource: report.blinkModels ?? [],
-                                    xValueMapper: (BlinkModel data, _) =>
-                                        convertDateTimeToMinute(
-                                            data.createdAt!),
-                                    yValueMapper: (BlinkModel data, _) =>
-                                        report.avgBlinkValue ?? 0,
-                                  ),
-                                ]),
-                          ),
-                          Row(
-                            children: [
-                              _buildItemResult(context,
-                                  itemIndex: "12 KPM",
-                                  label: "Avg KPM",
-                                  icon: Ionicons.eye_outline),
-                              _buildItemResult(context,
-                                  itemIndex: "0.4 detik",
-                                  label: "Blink Duration",
-                                  icon: Ionicons.eye_outline),
                             ],
                           )
                         ],

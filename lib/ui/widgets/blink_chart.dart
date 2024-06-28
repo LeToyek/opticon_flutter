@@ -45,6 +45,7 @@ class BlinkChart extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final blinkCount = ref
         .watch(bluetoothControllerProvider.select((value) => value.blinkCount));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,

@@ -157,48 +157,74 @@ class BluetoothController extends _$BluetoothController {
     print("Data: $dataList");
 
     List<String> receivedData = [];
-    if (dataList.length == 3) {
+    if (dataList.length == 4) {
       receivedData =
           dataList.map((e) => int.parse(e, radix: 16).toString()).toList();
 
       if (receivedData[0] != "101") {
-        // print("BPM: ${receivedData[3]}");
+        print("BLINK COUNT: ${state.blinkCount}");
+
         print("BATTERY: ${receivedData[0]}%");
-        print("BLPM: ${receivedData[1]}");
+        print("KPM: ${receivedData[1]}");
         print("BPM: ${receivedData[2]}");
+        print("BLINK DURATION: ${receivedData[3]}");
 
-        final double convertedBlPM = int.tryParse(receivedData[2])! / 100;
-
-        // get the time now, is the time minute is different with the past minute (state.minutePast)
         final now = DateTime.now();
         final minute = now.minute;
+
+        if (minute != 0 && state.minutePast == 0) {
+          state = state.copyWith(minutePast: minute);
+        }
+
         if (minute != state.minutePast) {
           try {
+            print(" MINUTE $minute | PAST MINUTE ${state.minutePast}");
             await _reportService.postReportData(ReportDataModel(
               blinkCount: state.blinkCount,
+              highestBlinkDuration: state.highestBlinkDuration,
               bpmValue: int.tryParse(receivedData[2])!,
-              blinkDuration: 90,
               userId: _auth.currentUser!.uid,
               createdAt: now.toString(),
             ));
+            state = state.copyWith(
+                minutePast: minute,
+                blinkCount: 0,
+                prevKPM: 0,
+                highestBlinkDuration: 0);
           } catch (e) {
             state = state.copyWith(
-                errorMessage: 'Error occurred while posting data');
+                errorMessage: 'Error occurred while posting data',
+                minutePast: minute,
+                blinkCount: 0,
+                prevKPM: 0,
+                highestBlinkDuration: 0);
           }
-          state = state.copyWith(minutePast: minute, blinkCount: 0);
         }
 
-        if (convertedBlPM > 0.8) {
-          print("IS BLINKING $convertedBlPM");
-          state =
-              state.copyWith(blinkCount: state.blinkCount + 1, isBlink: true);
-          print("BLINK COUNT: ${state.blinkCount}");
-        } else {
-          state = state.copyWith(isBlink: false);
+        int kpm = int.parse(receivedData[1]);
+        print("BLINK COUNT: ${state.blinkCount} | BLINK: ${receivedData[1]}");
+
+        if (kpm > state.prevKPM) {
+          int addBlink = kpm - state.prevKPM;
+          state = state.copyWith(
+            blinkCount: state.blinkCount + addBlink,
+            blpmList: [...state.blpmList, addBlink],
+            prevKPM: kpm,
+            isBlink: true,
+          );
+        } else if (kpm < state.prevKPM) {
+          state = state.copyWith(
+            blinkCount: state.blinkCount + kpm,
+            prevKPM: kpm,
+            isBlink: true,
+          );
         }
-        state = state.copyWith(
-          blpmList: [...state.blpmList],
-        );
+        int blinkDuration = int.parse(receivedData[3]);
+        if (blinkDuration > state.highestBlinkDuration) {
+          state = state.copyWith(highestBlinkDuration: blinkDuration);
+        }
+
+        state = state.copyWith(blpmList: [...state.blpmList], isBlink: false);
 
         return BluetoothDataModel(
           battery: receivedData[0],
