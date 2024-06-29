@@ -31,7 +31,7 @@ mixin _$BluetoothControllerState {
   String get errorMessage => throw _privateConstructorUsedError;
   List<int> get blpmList => throw _privateConstructorUsedError;
   List<int> get bpmList => throw _privateConstructorUsedError;
-  int get prevKPM => throw _privateConstructorUsedError;
+  int? get prevKPM => throw _privateConstructorUsedError;
   int get secPrevKpm => throw _privateConstructorUsedError;
   bool get isButtonUnavailable => throw _privateConstructorUsedError;
 
@@ -62,7 +62,7 @@ abstract class $BluetoothControllerStateCopyWith<$Res> {
       String errorMessage,
       List<int> blpmList,
       List<int> bpmList,
-      int prevKPM,
+      int? prevKPM,
       int secPrevKpm,
       bool isButtonUnavailable});
 }
@@ -96,7 +96,7 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
     Object? errorMessage = null,
     Object? blpmList = null,
     Object? bpmList = null,
-    Object? prevKPM = null,
+    Object? prevKPM = freezed,
     Object? secPrevKpm = null,
     Object? isButtonUnavailable = null,
   }) {
@@ -161,10 +161,10 @@ class _$BluetoothControllerStateCopyWithImpl<$Res,
           ? _value.bpmList
           : bpmList // ignore: cast_nullable_to_non_nullable
               as List<int>,
-      prevKPM: null == prevKPM
+      prevKPM: freezed == prevKPM
           ? _value.prevKPM
           : prevKPM // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       secPrevKpm: null == secPrevKpm
           ? _value.secPrevKpm
           : secPrevKpm // ignore: cast_nullable_to_non_nullable
@@ -202,7 +202,7 @@ abstract class _$$BluetoothControllerStateImplCopyWith<$Res>
       String errorMessage,
       List<int> blpmList,
       List<int> bpmList,
-      int prevKPM,
+      int? prevKPM,
       int secPrevKpm,
       bool isButtonUnavailable});
 }
@@ -235,7 +235,7 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
     Object? errorMessage = null,
     Object? blpmList = null,
     Object? bpmList = null,
-    Object? prevKPM = null,
+    Object? prevKPM = freezed,
     Object? secPrevKpm = null,
     Object? isButtonUnavailable = null,
   }) {
@@ -300,10 +300,10 @@ class __$$BluetoothControllerStateImplCopyWithImpl<$Res>
           ? _value._bpmList
           : bpmList // ignore: cast_nullable_to_non_nullable
               as List<int>,
-      prevKPM: null == prevKPM
+      prevKPM: freezed == prevKPM
           ? _value.prevKPM
           : prevKPM // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
       secPrevKpm: null == secPrevKpm
           ? _value.secPrevKpm
           : secPrevKpm // ignore: cast_nullable_to_non_nullable
@@ -335,7 +335,7 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
       this.errorMessage = "",
       final List<int> blpmList = const [],
       final List<int> bpmList = const [],
-      this.prevKPM = 0,
+      this.prevKPM = null,
       this.secPrevKpm = 0,
       this.isButtonUnavailable = false})
       : _devicesList = devicesList,
@@ -402,7 +402,7 @@ class _$BluetoothControllerStateImpl extends _BluetoothControllerState {
 
   @override
   @JsonKey()
-  final int prevKPM;
+  final int? prevKPM;
   @override
   @JsonKey()
   final int secPrevKpm;
@@ -499,7 +499,7 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
       final String errorMessage,
       final List<int> blpmList,
       final List<int> bpmList,
-      final int prevKPM,
+      final int? prevKPM,
       final int secPrevKpm,
       final bool isButtonUnavailable}) = _$BluetoothControllerStateImpl;
   _BluetoothControllerState._() : super._();
@@ -535,7 +535,7 @@ abstract class _BluetoothControllerState extends BluetoothControllerState {
   @override
   List<int> get bpmList;
   @override
-  int get prevKPM;
+  int? get prevKPM;
   @override
   int get secPrevKpm;
   @override

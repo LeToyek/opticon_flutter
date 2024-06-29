@@ -24,7 +24,7 @@ class BluetoothControllerState with _$BluetoothControllerState {
       @Default("") String errorMessage,
       @Default([]) List<int> blpmList,
       @Default([]) List<int> bpmList,
-      @Default(0) int prevKPM,
+      @Default(null) int? prevKPM,
       @Default(0) int secPrevKpm,
       @Default(false) bool isButtonUnavailable}) = _BluetoothControllerState;
 

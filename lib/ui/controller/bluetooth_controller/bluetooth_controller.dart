@@ -112,7 +112,10 @@ class BluetoothController extends _$BluetoothController {
     await state.connection?.close();
     await _connectionSubscription?.cancel();
     state = state.copyWith(
-        message: 'Device disconnected', isButtonUnavailable: false);
+        blinkCount: 0,
+        prevKPM: null,
+        message: 'Device disconnected',
+        isButtonUnavailable: false);
   }
 
   Future<void> connect() async {
@@ -130,7 +133,10 @@ class BluetoothController extends _$BluetoothController {
 
           _connectionSubscription = conn.input?.listen(onData);
           state = state.copyWith(
-              message: 'Device connected', isButtonUnavailable: false);
+              blinkCount: 0,
+              prevKPM: null,
+              message: 'Device connected',
+              isButtonUnavailable: false);
         }
       }
     } catch (e) {
@@ -178,7 +184,19 @@ class BluetoothController extends _$BluetoothController {
         }
         int kpm = int.parse(receivedData[1]);
 
-        if (minute != state.minutePast) {
+        print("PREV KPM: ${state.prevKPM}");
+
+        if (state.prevKPM == null) {
+          state = state.copyWith(blinkCount: kpm);
+        }
+
+        if (state.prevKPM != null) {
+          state = state.copyWith(blinkCount: kpm - state.prevKPM!);
+          if (kpm < state.prevKPM!) {
+            state = state.copyWith(prevKPM: kpm, blinkCount: kpm);
+          }
+        }
+        if (minute != state.minutePast && state.blinkCount > 0) {
           try {
             print(" MINUTE $minute | PAST MINUTE ${state.minutePast}");
             print(
@@ -190,14 +208,12 @@ class BluetoothController extends _$BluetoothController {
               userId: _auth.currentUser!.uid,
               createdAt: Timestamp.now(),
             ));
-            print("KPMMMMM ${kpm - (kpm - 1)}");
             state = state.copyWith(
                 minutePast: minute,
                 blinkCount: 0,
-                prevKPM: kpm - (kpm - 1),
+                prevKPM: kpm,
                 highestBlinkDuration: 0);
           } catch (e) {
-            print("ERRRORR $e");
             state = state.copyWith(
                 errorMessage: 'Error occurred while posting data',
                 minutePast: minute,
@@ -209,23 +225,6 @@ class BluetoothController extends _$BluetoothController {
 
         print("BLINK COUNT: ${state.blinkCount} | BLINK: ${receivedData[1]}");
 
-        if (kpm > state.prevKPM) {
-          int addBlink = kpm - state.prevKPM;
-          state = state.copyWith(
-            blinkCount: state.blinkCount + addBlink,
-            blpmList: [...state.blpmList, addBlink],
-            prevKPM: kpm,
-            isBlink: true,
-          );
-        } else if (kpm < state.prevKPM) {
-          if (minute == state.minutePast) {
-            state = state.copyWith(
-              blinkCount: state.blinkCount + (kpm - state.secPrevKpm),
-              secPrevKpm: kpm,
-              isBlink: true,
-            );
-          }
-        }
         int blinkDuration = int.parse(receivedData[3]);
         if (blinkDuration > state.highestBlinkDuration) {
           state = state.copyWith(highestBlinkDuration: blinkDuration);
