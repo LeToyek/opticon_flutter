@@ -17,11 +17,16 @@ class ReportService implements ReportServiceImpl {
   Future<ReportModel> getReportDays() async {
     try {
       final res = await _reportRepository.getAverageBpmForToday();
+      print("RESULT ${res?.avgBlPM.floor()}");
       final today = DateTime.now();
       if (res != null) {
+        final double convertedHighestBlinkDuration =
+            res.highestBlinkDuration / 100;
+        print("HIGHEST BLINK DURATION $convertedHighestBlinkDuration");
         return ReportModel(
             avgBPMValue: 90,
             avgBlinkValue: int.parse(res.avgBlPM.floor().toString()),
+            highestBlinkDuration: convertedHighestBlinkDuration,
             createdAt: today.toString(),
             reportData: res.reports);
       }

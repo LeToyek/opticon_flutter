@@ -25,6 +25,7 @@ class BluetoothControllerState with _$BluetoothControllerState {
       @Default([]) List<int> blpmList,
       @Default([]) List<int> bpmList,
       @Default(0) int prevKPM,
+      @Default(0) int secPrevKpm,
       @Default(false) bool isButtonUnavailable}) = _BluetoothControllerState;
 
   bool get isConnected => connection != null && connection!.isConnected;

@@ -87,7 +87,7 @@ final bluetoothRepositoryProvider =
 
 typedef BluetoothRepositoryRef = AutoDisposeProviderRef<BluetoothRepository>;
 String _$predictionRepositoryHash() =>
-    r'e290bd77e08b430057a970a45db3d5c09ca4ce2b';
+    r'f1b38605b23bea4b870c9e90961a31b4b6a1eea6';
 
 /// See also [predictionRepository].
 @ProviderFor(predictionRepository)

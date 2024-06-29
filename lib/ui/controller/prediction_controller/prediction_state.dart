@@ -1,9 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:opticon_flutter/domain/model/predict_model.dart';
+import 'package:opticon_flutter/domain/model/predict_response.dart';
+import 'package:opticon_flutter/domain/model/report_model.dart';
 
 sealed class PredictionState {
-  PredictModel? predictModel;
+  PredictResponse? predictResponse;
+  ReportModel? report;
 
-  PredictionState({this.predictModel});
+  PredictionState({this.report, this.predictResponse});
 }
 
 class InitialPredictionState extends PredictionState {
@@ -15,8 +19,19 @@ class LoadingPredictionState extends PredictionState {
 }
 
 class LoadedPredictionState extends PredictionState {
-  LoadedPredictionState({required PredictModel predictModel})
-      : super(predictModel: predictModel);
+  final List<PredictFinalModel> predictFinal;
+  final double healthyScore;
+  final String title, description;
+  final Color color;
+  LoadedPredictionState(
+      {required ReportModel report,
+      required PredictResponse predictResponse,
+      required this.healthyScore,
+      required this.title,
+      required this.description,
+      required this.color,
+      required this.predictFinal})
+      : super(report: report, predictResponse: predictResponse);
 }
 
 class ErrorPredictionState extends PredictionState {

@@ -34,8 +34,11 @@ class ReportRepository implements ReportRepositoryImpl {
 
   Future<void> postReportData(ReportDataModel reportDataModel) async {
     try {
+      print('reportDataModel: ${reportDataModel.toJson()}');
+      final modelJson = reportDataModel.toJson();
+      modelJson['createdAt'] = FieldValue.serverTimestamp();
       final res = await _firestore.collection('reports').add(
-            reportDataModel.toJson(),
+            modelJson,
           );
     } catch (e) {
       rethrow;
@@ -46,16 +49,19 @@ class ReportRepository implements ReportRepositoryImpl {
   Future<ReportResponse?> getAverageBpmForToday() async {
     try {
       final now = DateTime.now();
-      final startOfDay =
-          Timestamp.fromDate(DateTime(now.year, now.month, now.day - 1));
-      final endOfDay = Timestamp.fromDate(
-          DateTime(now.year, now.month, now.day, 23, 59, 59));
 
+      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+      // Convert to Timestamps
+      Timestamp startTimestamp = Timestamp.fromDate(startOfDay);
+      Timestamp endTimestamp = Timestamp.fromDate(endOfDay);
       final res = await _firestore
           .collection('reports')
           .where('user_id', isEqualTo: _auth.currentUser!.uid)
-          .where('created_at', isGreaterThanOrEqualTo: startOfDay)
-          .where('created_at', isLessThanOrEqualTo: endOfDay)
+          .where('createdAt', isGreaterThanOrEqualTo: startTimestamp)
+          .where('createdAt', isLessThanOrEqualTo: endTimestamp)
+          .orderBy('createdAt')
           .get();
 
       print('res: ${res.docs}');
@@ -65,11 +71,11 @@ class ReportRepository implements ReportRepositoryImpl {
             .toList();
 
         // Extract bpm_values and calculate the average
-        final List<double> bpmValues =
-            data.map((report) => report.bpmValue!.toDouble()).toList();
+        final List<double> blinkCounts =
+            data.map((report) => report.blinkCount!.toDouble()).toList();
         print("SUCCESS 1");
         final double avgBlPM =
-            bpmValues.reduce((a, b) => a + b) / bpmValues.length;
+            blinkCounts.reduce((a, b) => a + b) / blinkCounts.length;
         print("SUCCESS 2");
         final int highestBlinkDuration = data
             .map((report) => report.highestBlinkDuration!)
