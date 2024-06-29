@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
 import 'package:opticon_flutter/domain/model/report_data_model.dart';
 import 'package:opticon_flutter/ui/controller/report_controller/report_controller.dart';
 import 'package:opticon_flutter/ui/controller/report_controller/report_state.dart';
@@ -162,11 +163,12 @@ class LaporanPage extends ConsumerWidget {
                           Row(
                             children: [
                               _buildItemResult(context,
-                                  itemIndex: "12 KPM",
+                                  itemIndex: "${report.avgBlinkValue} KPM",
                                   label: "Avg KPM",
                                   icon: Ionicons.eye_outline),
                               _buildItemResult(context,
-                                  itemIndex: "0.4 detik",
+                                  itemIndex:
+                                      "${report.highestBlinkDuration} detik",
                                   label: "Blink Duration",
                                   icon: Ionicons.eye_outline),
                             ],
@@ -185,61 +187,61 @@ class LaporanPage extends ConsumerWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          SizedBox(
-                            // width: MediaQuery.of(context).size.width * 0.8,
-                            height: MediaQuery.of(context).size.height / 4,
-                            child: SfCartesianChart(
-                                legend: const Legend(
-                                  isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                tooltipBehavior: TooltipBehavior(
-                                    enable: true,
-                                    header: "Detak Jantung",
-                                    format: 'point.y BPM'),
-                                primaryXAxis: const CategoryAxis(
-                                  isVisible: true,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ),
-                                primaryYAxis: const NumericAxis(
-                                  isVisible: true,
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ),
-                                series: <CartesianSeries<HeartBeatModel,
-                                    String>>[
-                                  ColumnSeries<HeartBeatModel, String>(
-                                    color: colorScheme.surfaceVariant,
-                                    name: 'Detak Jantung',
-                                    animationDuration: 500,
-                                    enableTooltip: true,
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                    dataSource: report.heartBeatsMinutes ?? [],
-                                    xValueMapper: (HeartBeatModel data, _) =>
-                                        convertDateTimeToMinute(
-                                            data.createdAt!),
-                                    yValueMapper: (HeartBeatModel data, _) =>
-                                        data.bpmValue,
-                                  ),
-                                  // add average bpm
+                          // SizedBox(
+                          //   // width: MediaQuery.of(context).size.width * 0.8,
+                          //   height: MediaQuery.of(context).size.height / 4,
+                          //   child: SfCartesianChart(
+                          //       legend: const Legend(
+                          //         isVisible: true,
+                          //         textStyle: TextStyle(
+                          //             color: Colors.black,
+                          //             fontWeight: FontWeight.bold),
+                          //       ),
+                          //       tooltipBehavior: TooltipBehavior(
+                          //           enable: true,
+                          //           header: "Detak Jantung",
+                          //           format: 'point.y BPM'),
+                          //       primaryXAxis: const CategoryAxis(
+                          //         isVisible: true,
+                          //         labelStyle: TextStyle(
+                          //             color: Colors.black, fontSize: 12),
+                          //       ),
+                          //       primaryYAxis: const NumericAxis(
+                          //         isVisible: true,
+                          //         labelStyle: TextStyle(
+                          //             color: Colors.black, fontSize: 12),
+                          //       ),
+                          //       series: <CartesianSeries<HeartBeatModel,
+                          //           String>>[
+                          //         ColumnSeries<HeartBeatModel, String>(
+                          //           color: colorScheme.surfaceVariant,
+                          //           name: 'Detak Jantung',
+                          //           animationDuration: 500,
+                          //           enableTooltip: true,
+                          //           borderRadius: const BorderRadius.vertical(
+                          //               top: Radius.circular(10)),
+                          //           dataSource: report.heartBeatsMinutes ?? [],
+                          //           xValueMapper: (HeartBeatModel data, _) =>
+                          //               convertDateTimeToMinute(
+                          //                   data.createdAt!),
+                          //           yValueMapper: (HeartBeatModel data, _) =>
+                          //               data.bpmValue,
+                          //         ),
+                          //         // add average bpm
 
-                                  LineSeries<HeartBeatModel, String>(
-                                    color: colorScheme.primary,
-                                    enableTooltip: true,
-                                    name: 'Rata-rata',
-                                    dataSource: report.heartBeatsMinutes ?? [],
-                                    xValueMapper: (HeartBeatModel data, _) =>
-                                        convertDateTimeToMinute(
-                                            data.createdAt!),
-                                    yValueMapper: (HeartBeatModel data, _) =>
-                                        report.avgBPMValue ?? 0,
-                                  ),
-                                ]),
-                          ),
+                          //         LineSeries<HeartBeatModel, String>(
+                          //           color: colorScheme.primary,
+                          //           enableTooltip: true,
+                          //           name: 'Rata-rata',
+                          //           dataSource: report.heartBeatsMinutes ?? [],
+                          //           xValueMapper: (HeartBeatModel data, _) =>
+                          //               convertDateTimeToMinute(
+                          //                   data.createdAt!),
+                          //           yValueMapper: (HeartBeatModel data, _) =>
+                          //               report.avgBPMValue ?? 0,
+                          //         ),
+                          //       ]),
+                          // ),
                           Row(
                             children: [
                               _buildItemResult(context,
@@ -279,14 +281,14 @@ class LaporanPage extends ConsumerWidget {
                             child: ListTile(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  side: BorderSide(
-                                      width: 1, color: colorScheme.primary)),
-                              leading: Icon(
+                                  side: const BorderSide(
+                                      width: 1, color: Colors.orange)),
+                              leading: const Icon(
                                 Ionicons.sparkles,
-                                color: colorScheme.primary,
+                                color: Colors.orange,
                               ),
                               title: Text(
-                                "Prediksi Jadwal Efektif (AI)",
+                                "Prediksi Keamanan (AI)",
                                 style: textTheme.labelLarge!
                                     .apply(fontWeightDelta: 2),
                               ),
@@ -305,8 +307,8 @@ class LaporanPage extends ConsumerWidget {
                                           boxShadow: [
                                             // breathing shadow
                                             BoxShadow(
-                                              color: colorScheme.primary
-                                                  .withOpacity(0.3),
+                                              color: Colors.orange
+                                                  .withOpacity(0.5),
                                               // map value from 0 to 1 to 0 to 8
                                               blurRadius: 10 * value,
                                               offset: const Offset(0, 0),
@@ -460,9 +462,10 @@ class LaporanPage extends ConsumerWidget {
     );
   }
 
-  String convertDateTimeToMinute(String dateTime) {
-    final date = DateTime.parse(dateTime);
-    return '${date.hour}:${date.minute}';
+  String convertDateTimeToMinute(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    String formattedDate = DateFormat('kk:mm').format(dateTime);
+    return formattedDate;
   }
 
   String getMessage({required String status}) {

@@ -20,15 +20,10 @@ PredictModel _$PredictModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PredictModel {
-  int? get avgBPMValue => throw _privateConstructorUsedError;
-  int? get bpmSleepyThreshold => throw _privateConstructorUsedError;
-  int? get avgBlinkValue => throw _privateConstructorUsedError;
-  int? get blinkSleepyThreshold => throw _privateConstructorUsedError;
-  List<HeartBeatModel>? get heartBeatsMinutes =>
-      throw _privateConstructorUsedError;
-  List<BlinkModel>? get blinkModels => throw _privateConstructorUsedError;
-  String? get status => throw _privateConstructorUsedError;
-  String? get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'input_data')
+  List<int> get inputData => throw _privateConstructorUsedError;
+  @JsonKey(name: 'predictions')
+  List<double> get predictions => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,14 +38,8 @@ abstract class $PredictModelCopyWith<$Res> {
       _$PredictModelCopyWithImpl<$Res, PredictModel>;
   @useResult
   $Res call(
-      {int? avgBPMValue,
-      int? bpmSleepyThreshold,
-      int? avgBlinkValue,
-      int? blinkSleepyThreshold,
-      List<HeartBeatModel>? heartBeatsMinutes,
-      List<BlinkModel>? blinkModels,
-      String? status,
-      String? createdAt});
+      {@JsonKey(name: 'input_data') List<int> inputData,
+      @JsonKey(name: 'predictions') List<double> predictions});
 }
 
 /// @nodoc
@@ -66,48 +55,18 @@ class _$PredictModelCopyWithImpl<$Res, $Val extends PredictModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? avgBPMValue = freezed,
-    Object? bpmSleepyThreshold = freezed,
-    Object? avgBlinkValue = freezed,
-    Object? blinkSleepyThreshold = freezed,
-    Object? heartBeatsMinutes = freezed,
-    Object? blinkModels = freezed,
-    Object? status = freezed,
-    Object? createdAt = freezed,
+    Object? inputData = null,
+    Object? predictions = null,
   }) {
     return _then(_value.copyWith(
-      avgBPMValue: freezed == avgBPMValue
-          ? _value.avgBPMValue
-          : avgBPMValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      bpmSleepyThreshold: freezed == bpmSleepyThreshold
-          ? _value.bpmSleepyThreshold
-          : bpmSleepyThreshold // ignore: cast_nullable_to_non_nullable
-              as int?,
-      avgBlinkValue: freezed == avgBlinkValue
-          ? _value.avgBlinkValue
-          : avgBlinkValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      blinkSleepyThreshold: freezed == blinkSleepyThreshold
-          ? _value.blinkSleepyThreshold
-          : blinkSleepyThreshold // ignore: cast_nullable_to_non_nullable
-              as int?,
-      heartBeatsMinutes: freezed == heartBeatsMinutes
-          ? _value.heartBeatsMinutes
-          : heartBeatsMinutes // ignore: cast_nullable_to_non_nullable
-              as List<HeartBeatModel>?,
-      blinkModels: freezed == blinkModels
-          ? _value.blinkModels
-          : blinkModels // ignore: cast_nullable_to_non_nullable
-              as List<BlinkModel>?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+      inputData: null == inputData
+          ? _value.inputData
+          : inputData // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      predictions: null == predictions
+          ? _value.predictions
+          : predictions // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ) as $Val);
   }
 }
@@ -121,14 +80,8 @@ abstract class _$$PredictModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? avgBPMValue,
-      int? bpmSleepyThreshold,
-      int? avgBlinkValue,
-      int? blinkSleepyThreshold,
-      List<HeartBeatModel>? heartBeatsMinutes,
-      List<BlinkModel>? blinkModels,
-      String? status,
-      String? createdAt});
+      {@JsonKey(name: 'input_data') List<int> inputData,
+      @JsonKey(name: 'predictions') List<double> predictions});
 }
 
 /// @nodoc
@@ -142,48 +95,18 @@ class __$$PredictModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? avgBPMValue = freezed,
-    Object? bpmSleepyThreshold = freezed,
-    Object? avgBlinkValue = freezed,
-    Object? blinkSleepyThreshold = freezed,
-    Object? heartBeatsMinutes = freezed,
-    Object? blinkModels = freezed,
-    Object? status = freezed,
-    Object? createdAt = freezed,
+    Object? inputData = null,
+    Object? predictions = null,
   }) {
     return _then(_$PredictModelImpl(
-      avgBPMValue: freezed == avgBPMValue
-          ? _value.avgBPMValue
-          : avgBPMValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      bpmSleepyThreshold: freezed == bpmSleepyThreshold
-          ? _value.bpmSleepyThreshold
-          : bpmSleepyThreshold // ignore: cast_nullable_to_non_nullable
-              as int?,
-      avgBlinkValue: freezed == avgBlinkValue
-          ? _value.avgBlinkValue
-          : avgBlinkValue // ignore: cast_nullable_to_non_nullable
-              as int?,
-      blinkSleepyThreshold: freezed == blinkSleepyThreshold
-          ? _value.blinkSleepyThreshold
-          : blinkSleepyThreshold // ignore: cast_nullable_to_non_nullable
-              as int?,
-      heartBeatsMinutes: freezed == heartBeatsMinutes
-          ? _value._heartBeatsMinutes
-          : heartBeatsMinutes // ignore: cast_nullable_to_non_nullable
-              as List<HeartBeatModel>?,
-      blinkModels: freezed == blinkModels
-          ? _value._blinkModels
-          : blinkModels // ignore: cast_nullable_to_non_nullable
-              as List<BlinkModel>?,
-      status: freezed == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String?,
-      createdAt: freezed == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+      inputData: null == inputData
+          ? _value._inputData
+          : inputData // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      predictions: null == predictions
+          ? _value._predictions
+          : predictions // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ));
   }
 }
@@ -191,58 +114,36 @@ class __$$PredictModelImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$PredictModelImpl implements _PredictModel {
-  const _$PredictModelImpl(
-      {this.avgBPMValue,
-      this.bpmSleepyThreshold,
-      this.avgBlinkValue,
-      this.blinkSleepyThreshold,
-      final List<HeartBeatModel>? heartBeatsMinutes,
-      final List<BlinkModel>? blinkModels,
-      this.status,
-      this.createdAt})
-      : _heartBeatsMinutes = heartBeatsMinutes,
-        _blinkModels = blinkModels;
+  _$PredictModelImpl(
+      {@JsonKey(name: 'input_data') required final List<int> inputData,
+      @JsonKey(name: 'predictions') required final List<double> predictions})
+      : _inputData = inputData,
+        _predictions = predictions;
 
   factory _$PredictModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$PredictModelImplFromJson(json);
 
+  final List<int> _inputData;
   @override
-  final int? avgBPMValue;
-  @override
-  final int? bpmSleepyThreshold;
-  @override
-  final int? avgBlinkValue;
-  @override
-  final int? blinkSleepyThreshold;
-  final List<HeartBeatModel>? _heartBeatsMinutes;
-  @override
-  List<HeartBeatModel>? get heartBeatsMinutes {
-    final value = _heartBeatsMinutes;
-    if (value == null) return null;
-    if (_heartBeatsMinutes is EqualUnmodifiableListView)
-      return _heartBeatsMinutes;
+  @JsonKey(name: 'input_data')
+  List<int> get inputData {
+    if (_inputData is EqualUnmodifiableListView) return _inputData;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_inputData);
   }
 
-  final List<BlinkModel>? _blinkModels;
+  final List<double> _predictions;
   @override
-  List<BlinkModel>? get blinkModels {
-    final value = _blinkModels;
-    if (value == null) return null;
-    if (_blinkModels is EqualUnmodifiableListView) return _blinkModels;
+  @JsonKey(name: 'predictions')
+  List<double> get predictions {
+    if (_predictions is EqualUnmodifiableListView) return _predictions;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_predictions);
   }
-
-  @override
-  final String? status;
-  @override
-  final String? createdAt;
 
   @override
   String toString() {
-    return 'PredictModel(avgBPMValue: $avgBPMValue, bpmSleepyThreshold: $bpmSleepyThreshold, avgBlinkValue: $avgBlinkValue, blinkSleepyThreshold: $blinkSleepyThreshold, heartBeatsMinutes: $heartBeatsMinutes, blinkModels: $blinkModels, status: $status, createdAt: $createdAt)';
+    return 'PredictModel(inputData: $inputData, predictions: $predictions)';
   }
 
   @override
@@ -250,35 +151,18 @@ class _$PredictModelImpl implements _PredictModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PredictModelImpl &&
-            (identical(other.avgBPMValue, avgBPMValue) ||
-                other.avgBPMValue == avgBPMValue) &&
-            (identical(other.bpmSleepyThreshold, bpmSleepyThreshold) ||
-                other.bpmSleepyThreshold == bpmSleepyThreshold) &&
-            (identical(other.avgBlinkValue, avgBlinkValue) ||
-                other.avgBlinkValue == avgBlinkValue) &&
-            (identical(other.blinkSleepyThreshold, blinkSleepyThreshold) ||
-                other.blinkSleepyThreshold == blinkSleepyThreshold) &&
             const DeepCollectionEquality()
-                .equals(other._heartBeatsMinutes, _heartBeatsMinutes) &&
+                .equals(other._inputData, _inputData) &&
             const DeepCollectionEquality()
-                .equals(other._blinkModels, _blinkModels) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                .equals(other._predictions, _predictions));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      avgBPMValue,
-      bpmSleepyThreshold,
-      avgBlinkValue,
-      blinkSleepyThreshold,
-      const DeepCollectionEquality().hash(_heartBeatsMinutes),
-      const DeepCollectionEquality().hash(_blinkModels),
-      status,
-      createdAt);
+      const DeepCollectionEquality().hash(_inputData),
+      const DeepCollectionEquality().hash(_predictions));
 
   @JsonKey(ignore: true)
   @override
@@ -295,35 +179,20 @@ class _$PredictModelImpl implements _PredictModel {
 }
 
 abstract class _PredictModel implements PredictModel {
-  const factory _PredictModel(
-      {final int? avgBPMValue,
-      final int? bpmSleepyThreshold,
-      final int? avgBlinkValue,
-      final int? blinkSleepyThreshold,
-      final List<HeartBeatModel>? heartBeatsMinutes,
-      final List<BlinkModel>? blinkModels,
-      final String? status,
-      final String? createdAt}) = _$PredictModelImpl;
+  factory _PredictModel(
+      {@JsonKey(name: 'input_data') required final List<int> inputData,
+      @JsonKey(name: 'predictions')
+      required final List<double> predictions}) = _$PredictModelImpl;
 
   factory _PredictModel.fromJson(Map<String, dynamic> json) =
       _$PredictModelImpl.fromJson;
 
   @override
-  int? get avgBPMValue;
+  @JsonKey(name: 'input_data')
+  List<int> get inputData;
   @override
-  int? get bpmSleepyThreshold;
-  @override
-  int? get avgBlinkValue;
-  @override
-  int? get blinkSleepyThreshold;
-  @override
-  List<HeartBeatModel>? get heartBeatsMinutes;
-  @override
-  List<BlinkModel>? get blinkModels;
-  @override
-  String? get status;
-  @override
-  String? get createdAt;
+  @JsonKey(name: 'predictions')
+  List<double> get predictions;
   @override
   @JsonKey(ignore: true)
   _$$PredictModelImplCopyWith<_$PredictModelImpl> get copyWith =>

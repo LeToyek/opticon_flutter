@@ -33,4 +33,5 @@ BluetoothRepository bluetoothRepository(BluetoothRepositoryRef ref) =>
 
 @riverpod
 PredicitonRepository predictionRepository(PredictionRepositoryRef ref) =>
-    PredicitonRepository(ref.watch(firebaseFirestoreProvider));
+    PredicitonRepository(ref.watch(firebaseFirestoreProvider),
+        ref.watch(firebaseAuthProvider), ref.watch(iotApiClientProvider));

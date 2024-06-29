@@ -1,23 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:opticon_flutter/domain/model/blink_model.dart';
-import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
 
 part 'predict_model.freezed.dart';
 part 'predict_model.g.dart';
 
 @freezed
 class PredictModel with _$PredictModel {
-  const factory PredictModel({
-    int? avgBPMValue,
-    int? bpmSleepyThreshold,
-    int? avgBlinkValue,
-    int? blinkSleepyThreshold,
-    List<HeartBeatModel>? heartBeatsMinutes,
-    List<BlinkModel>? blinkModels,
-    String? status,
-    String? createdAt,
+  factory PredictModel({
+    @JsonKey(name: 'input_data') required List<int> inputData,
+    @JsonKey(name: 'predictions') required List<double> predictions,
   }) = _PredictModel;
 
   factory PredictModel.fromJson(Map<String, dynamic> json) =>
       _$PredictModelFromJson(json);
+}
+
+class PredictFinalModel {
+  final double predictValue;
+  final Timestamp predictTime;
+
+  PredictFinalModel({required this.predictValue, required this.predictTime});
 }

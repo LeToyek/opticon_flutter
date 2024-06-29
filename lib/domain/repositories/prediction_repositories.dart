@@ -1,28 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:opticon_flutter/domain/model/heart_beat_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:opticon_flutter/datasources/iot_api_client.dart';
+import 'package:opticon_flutter/domain/model/predict_response.dart';
+import 'package:opticon_flutter/domain/model/report_data_model.dart';
 
 class PredicitonRepository {
   final FirebaseFirestore _firestore;
+  final FirebaseAuth _auth;
+  final IotApiClient _iotApiClient;
 
-  PredicitonRepository(this._firestore);
-  Future<List<HeartBeatModel>> heartBeatPredict() async {
-    final currentTime = DateTime.now();
-    var lastTime = currentTime.add(const Duration(minutes: 10));
+  PredicitonRepository(this._firestore, this._auth, this._iotApiClient);
 
-    List<HeartBeatModel> heartBeatsMinutes = [];
-
-    final randomBPM = [80, 90, 85, 88, 92, 95, 100, 88, 90, 85];
-
-    for (int i = 0; i < 10; i++) {
-      lastTime = lastTime.add(const Duration(minutes: 10));
-      heartBeatsMinutes.add(
-        HeartBeatModel(
-            bpmValue: randomBPM[i],
-            createdAt: lastTime.toString(),
-            isPrediction: 'true'),
-      );
+  Future<PredictResponse> getPredictionData(
+      List<ReportDataModel> reports) async {
+    try {
+      final res = await _iotApiClient.post('/predict', data: {
+        'reports': reports.map((e) => e.toJson()).toList(),
+      });
+      print('PREDICTION RESPONSE: ${res.data.toString()}');
+      return PredictResponse.fromJson(res.data);
+    } catch (e) {
+      print('ERROR: $e');
+      rethrow;
     }
-
-    return Future.value(heartBeatsMinutes);
   }
 }

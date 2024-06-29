@@ -26,8 +26,8 @@ mixin _$ReportDataModel {
   int? get blinkCount => throw _privateConstructorUsedError;
   @JsonKey(name: 'highest_blink_duration')
   int? get highestBlinkDuration => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
-  String? get createdAt => throw _privateConstructorUsedError;
+  @TimestampConverter()
+  Timestamp? get createdAt => throw _privateConstructorUsedError;
   @JsonKey(name: 'is_prediction')
   String? get isPrediction => throw _privateConstructorUsedError;
   @JsonKey(name: 'user_id')
@@ -49,7 +49,7 @@ abstract class $ReportDataModelCopyWith<$Res> {
       {@JsonKey(name: 'bpm_value') int? bpmValue,
       @JsonKey(name: 'blink_count') int? blinkCount,
       @JsonKey(name: 'highest_blink_duration') int? highestBlinkDuration,
-      @JsonKey(name: 'created_at') String? createdAt,
+      @TimestampConverter() Timestamp? createdAt,
       @JsonKey(name: 'is_prediction') String? isPrediction,
       @JsonKey(name: 'user_id') String? userId});
 }
@@ -90,7 +90,7 @@ class _$ReportDataModelCopyWithImpl<$Res, $Val extends ReportDataModel>
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Timestamp?,
       isPrediction: freezed == isPrediction
           ? _value.isPrediction
           : isPrediction // ignore: cast_nullable_to_non_nullable
@@ -115,7 +115,7 @@ abstract class _$$ReportDataModelImplCopyWith<$Res>
       {@JsonKey(name: 'bpm_value') int? bpmValue,
       @JsonKey(name: 'blink_count') int? blinkCount,
       @JsonKey(name: 'highest_blink_duration') int? highestBlinkDuration,
-      @JsonKey(name: 'created_at') String? createdAt,
+      @TimestampConverter() Timestamp? createdAt,
       @JsonKey(name: 'is_prediction') String? isPrediction,
       @JsonKey(name: 'user_id') String? userId});
 }
@@ -154,7 +154,7 @@ class __$$ReportDataModelImplCopyWithImpl<$Res>
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as Timestamp?,
       isPrediction: freezed == isPrediction
           ? _value.isPrediction
           : isPrediction // ignore: cast_nullable_to_non_nullable
@@ -174,7 +174,7 @@ class _$ReportDataModelImpl implements _ReportDataModel {
       {@JsonKey(name: 'bpm_value') this.bpmValue,
       @JsonKey(name: 'blink_count') this.blinkCount,
       @JsonKey(name: 'highest_blink_duration') this.highestBlinkDuration,
-      @JsonKey(name: 'created_at') this.createdAt,
+      @TimestampConverter() this.createdAt,
       @JsonKey(name: 'is_prediction') this.isPrediction,
       @JsonKey(name: 'user_id') this.userId});
 
@@ -191,8 +191,8 @@ class _$ReportDataModelImpl implements _ReportDataModel {
   @JsonKey(name: 'highest_blink_duration')
   final int? highestBlinkDuration;
   @override
-  @JsonKey(name: 'created_at')
-  final String? createdAt;
+  @TimestampConverter()
+  final Timestamp? createdAt;
   @override
   @JsonKey(name: 'is_prediction')
   final String? isPrediction;
@@ -248,7 +248,7 @@ abstract class _ReportDataModel implements ReportDataModel {
       {@JsonKey(name: 'bpm_value') final int? bpmValue,
       @JsonKey(name: 'blink_count') final int? blinkCount,
       @JsonKey(name: 'highest_blink_duration') final int? highestBlinkDuration,
-      @JsonKey(name: 'created_at') final String? createdAt,
+      @TimestampConverter() final Timestamp? createdAt,
       @JsonKey(name: 'is_prediction') final String? isPrediction,
       @JsonKey(name: 'user_id') final String? userId}) = _$ReportDataModelImpl;
 
@@ -265,8 +265,8 @@ abstract class _ReportDataModel implements ReportDataModel {
   @JsonKey(name: 'highest_blink_duration')
   int? get highestBlinkDuration;
   @override
-  @JsonKey(name: 'created_at')
-  String? get createdAt;
+  @TimestampConverter()
+  Timestamp? get createdAt;
   @override
   @JsonKey(name: 'is_prediction')
   String? get isPrediction;

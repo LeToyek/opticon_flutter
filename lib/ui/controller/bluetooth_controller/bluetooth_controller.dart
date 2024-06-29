@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -175,23 +176,28 @@ class BluetoothController extends _$BluetoothController {
         if (minute != 0 && state.minutePast == 0) {
           state = state.copyWith(minutePast: minute);
         }
+        int kpm = int.parse(receivedData[1]);
 
         if (minute != state.minutePast) {
           try {
             print(" MINUTE $minute | PAST MINUTE ${state.minutePast}");
+            print(
+                "BLINK COUNT: ${state.blinkCount} | BLINK: ${receivedData[1]}");
             await _reportService.postReportData(ReportDataModel(
               blinkCount: state.blinkCount,
               highestBlinkDuration: state.highestBlinkDuration,
               bpmValue: int.tryParse(receivedData[2])!,
               userId: _auth.currentUser!.uid,
-              createdAt: now.toString(),
+              createdAt: Timestamp.now(),
             ));
+            print("KPMMMMM ${kpm - (kpm - 1)}");
             state = state.copyWith(
                 minutePast: minute,
                 blinkCount: 0,
-                prevKPM: 0,
+                prevKPM: kpm - (kpm - 1),
                 highestBlinkDuration: 0);
           } catch (e) {
+            print("ERRRORR $e");
             state = state.copyWith(
                 errorMessage: 'Error occurred while posting data',
                 minutePast: minute,
@@ -201,7 +207,6 @@ class BluetoothController extends _$BluetoothController {
           }
         }
 
-        int kpm = int.parse(receivedData[1]);
         print("BLINK COUNT: ${state.blinkCount} | BLINK: ${receivedData[1]}");
 
         if (kpm > state.prevKPM) {
@@ -213,11 +218,13 @@ class BluetoothController extends _$BluetoothController {
             isBlink: true,
           );
         } else if (kpm < state.prevKPM) {
-          state = state.copyWith(
-            blinkCount: state.blinkCount + kpm,
-            prevKPM: kpm,
-            isBlink: true,
-          );
+          if (minute == state.minutePast) {
+            state = state.copyWith(
+              blinkCount: state.blinkCount + (kpm - state.secPrevKpm),
+              secPrevKpm: kpm,
+              isBlink: true,
+            );
+          }
         }
         int blinkDuration = int.parse(receivedData[3]);
         if (blinkDuration > state.highestBlinkDuration) {
