@@ -20,10 +20,13 @@ PredictResponse _$PredictResponseFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PredictResponse {
-  @JsonKey(name: 'input_data')
-  List<int>? get inputData => throw _privateConstructorUsedError;
+// @JsonKey(name: 'input_data') List<int>? inputData,
   @JsonKey(name: 'predictions')
-  List<double>? get predicitons => throw _privateConstructorUsedError;
+  List<int>? get predicitons => throw _privateConstructorUsedError;
+  @JsonKey(name: 'predictions_bpm')
+  List<int>? get predicitonsBpm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'predictions_blink_duration')
+  List<int>? get predicitonsBd => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,8 +41,9 @@ abstract class $PredictResponseCopyWith<$Res> {
       _$PredictResponseCopyWithImpl<$Res, PredictResponse>;
   @useResult
   $Res call(
-      {@JsonKey(name: 'input_data') List<int>? inputData,
-      @JsonKey(name: 'predictions') List<double>? predicitons});
+      {@JsonKey(name: 'predictions') List<int>? predicitons,
+      @JsonKey(name: 'predictions_bpm') List<int>? predicitonsBpm,
+      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd});
 }
 
 /// @nodoc
@@ -55,18 +59,23 @@ class _$PredictResponseCopyWithImpl<$Res, $Val extends PredictResponse>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? inputData = freezed,
     Object? predicitons = freezed,
+    Object? predicitonsBpm = freezed,
+    Object? predicitonsBd = freezed,
   }) {
     return _then(_value.copyWith(
-      inputData: freezed == inputData
-          ? _value.inputData
-          : inputData // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
       predicitons: freezed == predicitons
           ? _value.predicitons
           : predicitons // ignore: cast_nullable_to_non_nullable
-              as List<double>?,
+              as List<int>?,
+      predicitonsBpm: freezed == predicitonsBpm
+          ? _value.predicitonsBpm
+          : predicitonsBpm // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
+      predicitonsBd: freezed == predicitonsBd
+          ? _value.predicitonsBd
+          : predicitonsBd // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
     ) as $Val);
   }
 }
@@ -80,8 +89,9 @@ abstract class _$$PredictResponseImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@JsonKey(name: 'input_data') List<int>? inputData,
-      @JsonKey(name: 'predictions') List<double>? predicitons});
+      {@JsonKey(name: 'predictions') List<int>? predicitons,
+      @JsonKey(name: 'predictions_bpm') List<int>? predicitonsBpm,
+      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd});
 }
 
 /// @nodoc
@@ -95,18 +105,23 @@ class __$$PredictResponseImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? inputData = freezed,
     Object? predicitons = freezed,
+    Object? predicitonsBpm = freezed,
+    Object? predicitonsBd = freezed,
   }) {
     return _then(_$PredictResponseImpl(
-      inputData: freezed == inputData
-          ? _value._inputData
-          : inputData // ignore: cast_nullable_to_non_nullable
-              as List<int>?,
       predicitons: freezed == predicitons
           ? _value._predicitons
           : predicitons // ignore: cast_nullable_to_non_nullable
-              as List<double>?,
+              as List<int>?,
+      predicitonsBpm: freezed == predicitonsBpm
+          ? _value._predicitonsBpm
+          : predicitonsBpm // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
+      predicitonsBd: freezed == predicitonsBd
+          ? _value._predicitonsBd
+          : predicitonsBd // ignore: cast_nullable_to_non_nullable
+              as List<int>?,
     ));
   }
 }
@@ -115,29 +130,23 @@ class __$$PredictResponseImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PredictResponseImpl implements _PredictResponse {
   _$PredictResponseImpl(
-      {@JsonKey(name: 'input_data') final List<int>? inputData,
-      @JsonKey(name: 'predictions') final List<double>? predicitons})
-      : _inputData = inputData,
-        _predicitons = predicitons;
+      {@JsonKey(name: 'predictions') final List<int>? predicitons,
+      @JsonKey(name: 'predictions_bpm') final List<int>? predicitonsBpm,
+      @JsonKey(name: 'predictions_blink_duration')
+      final List<int>? predicitonsBd})
+      : _predicitons = predicitons,
+        _predicitonsBpm = predicitonsBpm,
+        _predicitonsBd = predicitonsBd;
 
   factory _$PredictResponseImpl.fromJson(Map<String, dynamic> json) =>
       _$$PredictResponseImplFromJson(json);
 
-  final List<int>? _inputData;
-  @override
-  @JsonKey(name: 'input_data')
-  List<int>? get inputData {
-    final value = _inputData;
-    if (value == null) return null;
-    if (_inputData is EqualUnmodifiableListView) return _inputData;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  final List<double>? _predicitons;
+// @JsonKey(name: 'input_data') List<int>? inputData,
+  final List<int>? _predicitons;
+// @JsonKey(name: 'input_data') List<int>? inputData,
   @override
   @JsonKey(name: 'predictions')
-  List<double>? get predicitons {
+  List<int>? get predicitons {
     final value = _predicitons;
     if (value == null) return null;
     if (_predicitons is EqualUnmodifiableListView) return _predicitons;
@@ -145,9 +154,31 @@ class _$PredictResponseImpl implements _PredictResponse {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<int>? _predicitonsBpm;
+  @override
+  @JsonKey(name: 'predictions_bpm')
+  List<int>? get predicitonsBpm {
+    final value = _predicitonsBpm;
+    if (value == null) return null;
+    if (_predicitonsBpm is EqualUnmodifiableListView) return _predicitonsBpm;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<int>? _predicitonsBd;
+  @override
+  @JsonKey(name: 'predictions_blink_duration')
+  List<int>? get predicitonsBd {
+    final value = _predicitonsBd;
+    if (value == null) return null;
+    if (_predicitonsBd is EqualUnmodifiableListView) return _predicitonsBd;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   String toString() {
-    return 'PredictResponse(inputData: $inputData, predicitons: $predicitons)';
+    return 'PredictResponse(predicitons: $predicitons, predicitonsBpm: $predicitonsBpm, predicitonsBd: $predicitonsBd)';
   }
 
   @override
@@ -156,17 +187,20 @@ class _$PredictResponseImpl implements _PredictResponse {
         (other.runtimeType == runtimeType &&
             other is _$PredictResponseImpl &&
             const DeepCollectionEquality()
-                .equals(other._inputData, _inputData) &&
+                .equals(other._predicitons, _predicitons) &&
             const DeepCollectionEquality()
-                .equals(other._predicitons, _predicitons));
+                .equals(other._predicitonsBpm, _predicitonsBpm) &&
+            const DeepCollectionEquality()
+                .equals(other._predicitonsBd, _predicitonsBd));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      const DeepCollectionEquality().hash(_inputData),
-      const DeepCollectionEquality().hash(_predicitons));
+      const DeepCollectionEquality().hash(_predicitons),
+      const DeepCollectionEquality().hash(_predicitonsBpm),
+      const DeepCollectionEquality().hash(_predicitonsBd));
 
   @JsonKey(ignore: true)
   @override
@@ -185,19 +219,23 @@ class _$PredictResponseImpl implements _PredictResponse {
 
 abstract class _PredictResponse implements PredictResponse {
   factory _PredictResponse(
-          {@JsonKey(name: 'input_data') final List<int>? inputData,
-          @JsonKey(name: 'predictions') final List<double>? predicitons}) =
-      _$PredictResponseImpl;
+      {@JsonKey(name: 'predictions') final List<int>? predicitons,
+      @JsonKey(name: 'predictions_bpm') final List<int>? predicitonsBpm,
+      @JsonKey(name: 'predictions_blink_duration')
+      final List<int>? predicitonsBd}) = _$PredictResponseImpl;
 
   factory _PredictResponse.fromJson(Map<String, dynamic> json) =
       _$PredictResponseImpl.fromJson;
 
-  @override
-  @JsonKey(name: 'input_data')
-  List<int>? get inputData;
-  @override
+  @override // @JsonKey(name: 'input_data') List<int>? inputData,
   @JsonKey(name: 'predictions')
-  List<double>? get predicitons;
+  List<int>? get predicitons;
+  @override
+  @JsonKey(name: 'predictions_bpm')
+  List<int>? get predicitonsBpm;
+  @override
+  @JsonKey(name: 'predictions_blink_duration')
+  List<int>? get predicitonsBd;
   @override
   @JsonKey(ignore: true)
   _$$PredictResponseImplCopyWith<_$PredictResponseImpl> get copyWith =>

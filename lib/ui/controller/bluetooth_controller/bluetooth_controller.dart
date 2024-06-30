@@ -191,9 +191,11 @@ class BluetoothController extends _$BluetoothController {
         }
 
         if (state.prevKPM != null) {
-          state = state.copyWith(blinkCount: kpm - state.prevKPM!);
           if (kpm < state.prevKPM!) {
-            state = state.copyWith(prevKPM: kpm, blinkCount: kpm);
+            state = state.copyWith(
+                prevKPM: kpm, blinkCount: state.blinkCount + kpm);
+          } else {
+            state = state.copyWith(blinkCount: kpm - state.prevKPM!);
           }
         }
         if (minute != state.minutePast && state.blinkCount > 0) {

@@ -16,7 +16,7 @@ class PredictModel with _$PredictModel {
 }
 
 class PredictFinalModel {
-  final double predictValue;
+  final int predictValue;
   final Timestamp predictTime;
 
   PredictFinalModel({required this.predictValue, required this.predictTime});

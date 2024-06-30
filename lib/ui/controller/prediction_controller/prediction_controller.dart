@@ -13,6 +13,7 @@ part 'prediction_controller.g.dart';
 class PredictionController extends _$PredictionController {
   PredicitonService get _service => ref.read(predictionServiceProvider);
   ReportService get _reportService => ref.read(reportServiceProvider);
+  final int kpmThreshold = 15;
   @override
   PredictionState build() {
     fetchPrediction();
@@ -38,7 +39,7 @@ class PredictionController extends _$PredictionController {
               predictValue: predicts.predicitons![i],
               predictTime: predictionTimestamp));
 
-          if (reports.avgBlinkValue! < predicts.predicitons![i]) {
+          if (predicts.predicitons![i] > kpmThreshold) {
             healthyCounter++;
           }
         }
@@ -51,7 +52,8 @@ class PredictionController extends _$PredictionController {
           report: reports,
           predictResponse: predicts,
           healthyScore: healthyCounter / predicts.predicitons!.length,
-          predictFinal: predictFinals);
+          predictFinal: predictFinals,
+          kpmThreshold: kpmThreshold);
     } catch (e) {
       state = ErrorPredictionState(
         message: e.toString(),

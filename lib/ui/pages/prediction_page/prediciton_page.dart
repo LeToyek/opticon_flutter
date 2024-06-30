@@ -48,6 +48,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
           title: final title,
           color: final colorTitle,
           description: final description,
+          kpmThreshold: final kpmThreshold,
         ) =>
           SingleChildScrollView(
             child: Padding(
@@ -70,7 +71,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                         radius: 100,
 
                         /// Gauge value.
-                        value: 100 - healthyScore,
+                        value: 100 - (healthyScore * 100),
                         axis: GaugeAxis(
                           min: 0,
                           max: 100,
@@ -216,7 +217,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                           LineSeries<ReportDataModel, String>(
                             color: colorScheme.primary,
                             enableTooltip: true,
-                            name: 'Rata-rata',
+                            name: 'Frekuensi Kedipan Mata Normal',
                             dataSource: [
                               ...reports!.reportData!,
                               ...predictFinals
@@ -229,7 +230,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                             xValueMapper: (ReportDataModel data, _) =>
                                 convertDateTimeToMinute(data.createdAt!),
                             yValueMapper: (ReportDataModel data, _) =>
-                                reports.avgBlinkValue ?? 0,
+                                kpmThreshold,
                           ),
                         ]),
                   ),
