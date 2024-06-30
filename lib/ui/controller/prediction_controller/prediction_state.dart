@@ -23,6 +23,7 @@ class LoadedPredictionState extends PredictionState {
   final double healthyScore;
   final String title, description;
   final Color color;
+  final int kpmThreshold;
   LoadedPredictionState(
       {required ReportModel report,
       required PredictResponse predictResponse,
@@ -30,7 +31,8 @@ class LoadedPredictionState extends PredictionState {
       required this.title,
       required this.description,
       required this.color,
-      required this.predictFinal})
+      required this.predictFinal,
+      required this.kpmThreshold})
       : super(report: report, predictResponse: predictResponse);
 }
 

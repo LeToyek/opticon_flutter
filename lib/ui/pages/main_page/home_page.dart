@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/user_controller/user_controller.dart';
 import 'package:opticon_flutter/ui/pages/auth_page/auth_page.dart';
-import 'package:opticon_flutter/ui/pages/iot_page/iot_device_page.dart';
+import 'package:opticon_flutter/ui/pages/guidance_page/guidance_page.dart';
 import 'package:opticon_flutter/ui/pages/qr_page/qr_page.dart';
 import 'package:opticon_flutter/ui/theme/shadow.dart';
 import 'package:opticon_flutter/ui/widgets/battery_chart.dart';
@@ -46,7 +46,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, IOTDevice.routePath);
+                      Navigator.pushNamed(context, QRPage.routePath);
                     },
                     child: Container(
                         height: size.height / 5,
@@ -102,7 +102,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         context,
                         imageUrl: 'assets/man_i.png',
                         title: "Panduan Sehat",
-                        path: QRPage.routePath,
+                        path: GuidancePage.routePath,
                       ),
                       const SizedBox(
                         width: 16,

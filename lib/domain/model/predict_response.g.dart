@@ -9,17 +9,21 @@ part of 'predict_response.dart';
 _$PredictResponseImpl _$$PredictResponseImplFromJson(
         Map<String, dynamic> json) =>
     _$PredictResponseImpl(
-      inputData: (json['input_data'] as List<dynamic>?)
+      predicitons: (json['predictions'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList(),
-      predicitons: (json['predictions'] as List<dynamic>?)
-          ?.map((e) => (e as num).toDouble())
+      predicitonsBpm: (json['predictions_bpm'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
+      predicitonsBd: (json['predictions_blink_duration'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
           .toList(),
     );
 
 Map<String, dynamic> _$$PredictResponseImplToJson(
         _$PredictResponseImpl instance) =>
     <String, dynamic>{
-      'input_data': instance.inputData,
       'predictions': instance.predicitons,
+      'predictions_bpm': instance.predicitonsBpm,
+      'predictions_blink_duration': instance.predicitonsBd,
     };
