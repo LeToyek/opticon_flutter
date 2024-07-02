@@ -22,9 +22,9 @@ class ReportService implements ReportServiceImpl {
       if (res != null) {
         final double convertedHighestBlinkDuration =
             res.highestBlinkDuration / 100;
-        print("HIGHEST BLINK DURATION $convertedHighestBlinkDuration");
+
         return ReportModel(
-            avgBPMValue: 90,
+            avgBPMValue: int.parse(res.avgBPM.floor().toString()),
             avgBlinkValue: int.parse(res.avgBlPM.floor().toString()),
             highestBlinkDuration: convertedHighestBlinkDuration,
             createdAt: today.toString(),

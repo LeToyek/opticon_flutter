@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/user_controller/user_controller.dart';
-import 'package:opticon_flutter/ui/pages/auth_page/auth_page.dart';
+import 'package:opticon_flutter/ui/pages/guidance_page/guidance_health_page.dart';
 import 'package:opticon_flutter/ui/pages/guidance_page/guidance_page.dart';
 import 'package:opticon_flutter/ui/pages/qr_page/qr_page.dart';
 import 'package:opticon_flutter/ui/theme/shadow.dart';
@@ -101,8 +101,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                       _boxContainerNavigator(
                         context,
                         imageUrl: 'assets/man_i.png',
-                        title: "Panduan Sehat",
-                        path: GuidancePage.routePath,
+                        title: "Panduan Aman",
+                        path: GuidanceHealthPage.routePath,
                       ),
                       const SizedBox(
                         width: 16,
@@ -110,7 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       _boxContainerNavigator(context,
                           imageUrl: 'assets/book_i.png',
                           title: "Panduan Pakai",
-                          path: AuthPage.routePath),
+                          path: GuidancePage.routePath),
                     ],
                   )
                 ],

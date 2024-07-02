@@ -35,7 +35,6 @@ class _AuthPageState extends ConsumerState<AuthPage> {
   void _listenUser(_, AsyncValue<User?> state) {
     state.when(
       data: (user) {
-        print("USERKKK: $user");
         if (user != null) {
           Navigator.of(context).pushReplacementNamed(MainPage.routePath);
         }

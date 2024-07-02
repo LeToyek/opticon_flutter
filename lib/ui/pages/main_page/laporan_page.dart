@@ -36,37 +36,19 @@ class LaporanPage extends ConsumerWidget {
           LoadingReportState() => const Center(
               child: CircularProgressIndicator(),
             ),
-          LoadedReportState(report: final report) => SingleChildScrollView(
+          LoadedReportState(
+            endHours: final endHours,
+            startHours: final startHours,
+            walkingHours: final walkingHours,
+            report: final report
+          ) =>
+            SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Center(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        getStatus(status: report!.status ?? ''),
-                        style: textTheme.displaySmall!.apply(
-                          fontWeightDelta: 2,
-                          color: getColor(context, status: report.status ?? ''),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      getImage(status: report.status ?? ''),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Text(
-                        getMessage(status: report.status ?? ''),
-                        textAlign: TextAlign.center,
-                        style: textTheme.bodyMedium!.apply(
-                          color: colorScheme.onBackground,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 16,
-                      ),
                       SizedBox(
                         // margin: const EdgeInsets.only(bottom: 16),
                         height: size.height / 6,
@@ -74,16 +56,16 @@ class LaporanPage extends ConsumerWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             _buildWidgetDuration(context,
-                                timeIndex: "11:31 pm",
+                                timeIndex: startHours,
                                 label: "Start Time",
                                 icon: Ionicons.car_sport_outline),
                             _buildWidgetDuration(context,
-                                timeIndex: "12:12 pm",
+                                timeIndex: endHours,
                                 label: "End Time",
                                 icon: Ionicons.moon_outline,
                                 isCenter: true),
                             _buildWidgetDuration(context,
-                                timeIndex: "7:32 h",
+                                timeIndex: walkingHours,
                                 label: "End Time",
                                 icon: Ionicons.time_outline)
                           ],
@@ -138,7 +120,7 @@ class LaporanPage extends ConsumerWidget {
                                     borderColor: colorScheme.surfaceVariant,
                                     color: colorScheme.surfaceVariant
                                         .withOpacity(0.3),
-                                    dataSource: report.reportData ?? [],
+                                    dataSource: report?.reportData ?? [],
                                     xValueMapper: (ReportDataModel data, _) =>
                                         convertDateTimeToMinute(
                                             data.createdAt!),
@@ -151,24 +133,24 @@ class LaporanPage extends ConsumerWidget {
                                     color: colorScheme.primary,
                                     enableTooltip: true,
                                     name: 'Rata-rata',
-                                    dataSource: report.reportData ?? [],
+                                    dataSource: report?.reportData ?? [],
                                     xValueMapper: (ReportDataModel data, _) =>
                                         convertDateTimeToMinute(
                                             data.createdAt!),
                                     yValueMapper: (ReportDataModel data, _) =>
-                                        report.avgBlinkValue ?? 0,
+                                        report?.avgBlinkValue ?? 0,
                                   ),
                                 ]),
                           ),
                           Row(
                             children: [
                               _buildItemResult(context,
-                                  itemIndex: "${report.avgBlinkValue} KPM",
+                                  itemIndex: "${report?.avgBlinkValue} KPM",
                                   label: "Avg KPM",
                                   icon: Ionicons.eye_outline),
                               _buildItemResult(context,
                                   itemIndex:
-                                      "${report.highestBlinkDuration} detik",
+                                      "${report?.highestBlinkDuration} detik",
                                   label: "Blink Duration",
                                   icon: Ionicons.eye_outline),
                             ],
@@ -187,65 +169,66 @@ class LaporanPage extends ConsumerWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          // SizedBox(
-                          //   // width: MediaQuery.of(context).size.width * 0.8,
-                          //   height: MediaQuery.of(context).size.height / 4,
-                          //   child: SfCartesianChart(
-                          //       legend: const Legend(
-                          //         isVisible: true,
-                          //         textStyle: TextStyle(
-                          //             color: Colors.black,
-                          //             fontWeight: FontWeight.bold),
-                          //       ),
-                          //       tooltipBehavior: TooltipBehavior(
-                          //           enable: true,
-                          //           header: "Detak Jantung",
-                          //           format: 'point.y BPM'),
-                          //       primaryXAxis: const CategoryAxis(
-                          //         isVisible: true,
-                          //         labelStyle: TextStyle(
-                          //             color: Colors.black, fontSize: 12),
-                          //       ),
-                          //       primaryYAxis: const NumericAxis(
-                          //         isVisible: true,
-                          //         labelStyle: TextStyle(
-                          //             color: Colors.black, fontSize: 12),
-                          //       ),
-                          //       series: <CartesianSeries<HeartBeatModel,
-                          //           String>>[
-                          //         ColumnSeries<HeartBeatModel, String>(
-                          //           color: colorScheme.surfaceVariant,
-                          //           name: 'Detak Jantung',
-                          //           animationDuration: 500,
-                          //           enableTooltip: true,
-                          //           borderRadius: const BorderRadius.vertical(
-                          //               top: Radius.circular(10)),
-                          //           dataSource: report.heartBeatsMinutes ?? [],
-                          //           xValueMapper: (HeartBeatModel data, _) =>
-                          //               convertDateTimeToMinute(
-                          //                   data.createdAt!),
-                          //           yValueMapper: (HeartBeatModel data, _) =>
-                          //               data.bpmValue,
-                          //         ),
-                          //         // add average bpm
+                          SizedBox(
+                            // width: MediaQuery.of(context).size.width * 0.8,
+                            height: MediaQuery.of(context).size.height / 4,
+                            child: SfCartesianChart(
+                                legend: const Legend(
+                                  isVisible: true,
+                                  textStyle: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                tooltipBehavior: TooltipBehavior(
+                                    enable: true,
+                                    header: "Kedipan Mata",
+                                    format: 'point.y KPM'),
+                                primaryXAxis: const CategoryAxis(
+                                  isVisible: true,
+                                  labelStyle: TextStyle(
+                                      color: Colors.black, fontSize: 12),
+                                ),
+                                primaryYAxis: const NumericAxis(
+                                  isVisible: true,
+                                  labelStyle: TextStyle(
+                                      color: Colors.black, fontSize: 12),
+                                ),
+                                series: <CartesianSeries<ReportDataModel,
+                                    String>>[
+                                  AreaSeries<ReportDataModel, String>(
+                                    // color: colorScheme.surfaceVariant,
+                                    name: 'Kedipan Mata',
+                                    animationDuration: 500,
+                                    borderWidth: 2,
+                                    borderColor: colorScheme.surfaceVariant,
+                                    color: colorScheme.surfaceVariant
+                                        .withOpacity(0.3),
+                                    dataSource: report?.reportData ?? [],
+                                    xValueMapper: (ReportDataModel data, _) =>
+                                        convertDateTimeToMinute(
+                                            data.createdAt!),
+                                    yValueMapper: (ReportDataModel data, _) =>
+                                        data.bpmValue ?? 0,
+                                  ),
+                                  // add average bpm
 
-                          //         LineSeries<HeartBeatModel, String>(
-                          //           color: colorScheme.primary,
-                          //           enableTooltip: true,
-                          //           name: 'Rata-rata',
-                          //           dataSource: report.heartBeatsMinutes ?? [],
-                          //           xValueMapper: (HeartBeatModel data, _) =>
-                          //               convertDateTimeToMinute(
-                          //                   data.createdAt!),
-                          //           yValueMapper: (HeartBeatModel data, _) =>
-                          //               report.avgBPMValue ?? 0,
-                          //         ),
-                          //       ]),
-                          // ),
+                                  LineSeries<ReportDataModel, String>(
+                                    color: colorScheme.primary,
+                                    enableTooltip: true,
+                                    name: 'Rata-rata',
+                                    dataSource: report?.reportData ?? [],
+                                    xValueMapper: (ReportDataModel data, _) =>
+                                        convertDateTimeToMinute(
+                                            data.createdAt!),
+                                    yValueMapper: (ReportDataModel data, _) =>
+                                        report?.avgBPMValue ?? 0,
+                                  ),
+                                ]),
+                          ),
                           Row(
                             children: [
                               _buildItemResult(context,
-                                  itemIndex: "81 BPM",
+                                  itemIndex: "${report?.avgBPMValue} BPM",
                                   label: "Avg BPM",
                                   icon: Ionicons.heart_outline)
                             ],

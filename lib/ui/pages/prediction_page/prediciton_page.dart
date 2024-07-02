@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gauge_indicator/gauge_indicator.dart';
 import 'package:intl/intl.dart';
@@ -39,10 +40,34 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
         InitialPredictionState() => Center(
             child: Lottie.asset('assets/loading_puzzle_gif.json', height: 100)),
         LoadingPredictionState() => Center(
-            child: Lottie.asset('assets/loading_puzzle_gif.json', height: 100)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Lottie.asset(
+                  'assets/loading_puzzle_gif.json',
+                  height: 100,
+                ),
+                const Text(
+                  "Memproses Prediksi Anda...",
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+                )
+                    .animate(onPlay: (c) => c.loop())
+                    .tint(color: Colors.orange)
+                    .then(delay: const Duration(seconds: 1))
+                    .tint(color: Colors.red)
+                    .then(delay: const Duration(seconds: 1))
+                    .tint(color: Colors.orange)
+              ],
+            ),
+          ),
         LoadedPredictionState(
           report: final reports,
-          predictResponse: final predicts,
+          bpmThreshold: final bpmThreshold,
+          predictBPMFinal: final predictBPMFinal,
+          predictBdFinal: final predictBdFinal,
+          healthyScoreBPM: final healthyScoreBPM,
           predictFinal: final predictFinals,
           healthyScore: final healthyScore,
           title: final title,
@@ -243,6 +268,187 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                       _buildItemResult(context,
                           itemIndex: "${reports.highestBlinkDuration} detik",
                           label: "Blink Duration",
+                          icon: Ionicons.eye_outline),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Detak Jantung Per Menit',
+                    style: textTheme.titleMedium!.apply(
+                        color: colorScheme.onBackground, fontWeightDelta: 2),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    // width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: SfCartesianChart(
+                        legend: const Legend(
+                          isVisible: true,
+                          textStyle: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        tooltipBehavior: TooltipBehavior(
+                            enable: true,
+                            header: "Detak Jantung",
+                            format: 'point.y BPM'),
+                        primaryXAxis: const CategoryAxis(
+                          isVisible: true,
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        primaryYAxis: const NumericAxis(
+                          isVisible: true,
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        series: <CartesianSeries<dynamic, String>>[
+                          AreaSeries<ReportDataModel, String>(
+                            // color: colorScheme.surfaceVariant,
+                            name: 'Detak Jantung',
+                            animationDuration: 500,
+                            borderWidth: 2,
+                            borderColor: colorScheme.surfaceVariant,
+                            color: colorScheme.surfaceVariant.withOpacity(0.3),
+                            dataSource: reports.reportData ?? [],
+                            xValueMapper: (ReportDataModel data, _) =>
+                                convertDateTimeToMinute(data.createdAt!),
+                            yValueMapper: (ReportDataModel data, _) =>
+                                data.bpmValue ?? 0,
+                          ),
+                          AreaSeries<PredictFinalModel, String>(
+                            // color: colorScheme.surfaceVariant,
+                            name: 'Prediksi',
+                            animationDuration: 500,
+                            borderWidth: 2,
+                            borderColor: Colors.orange,
+                            color: Colors.orange.withOpacity(0.3),
+                            dataSource: predictBPMFinal ?? [],
+                            xValueMapper: (PredictFinalModel data, _) =>
+                                convertDateTimeToMinute(data.predictTime),
+                            yValueMapper: (PredictFinalModel data, _) =>
+                                data.predictValue ?? 0,
+                          ),
+                          // add average bpm
+
+                          LineSeries<ReportDataModel, String>(
+                            color: colorScheme.primary,
+                            enableTooltip: true,
+                            name: 'Detak Jantung Normal',
+                            dataSource: [
+                              ...reports.reportData!,
+                              ...predictFinals
+                                  .map((prediction) => ReportDataModel(
+                                        createdAt: prediction.predictTime,
+                                        blinkCount:
+                                            prediction.predictValue.toInt(),
+                                      )),
+                            ],
+                            xValueMapper: (ReportDataModel data, _) =>
+                                convertDateTimeToMinute(data.createdAt!),
+                            yValueMapper: (ReportDataModel data, _) =>
+                                bpmThreshold,
+                          ),
+                        ]),
+                  ),
+                  Row(
+                    children: [
+                      _buildItemResult(context,
+                          itemIndex: "${reports.avgBPMValue} BPM",
+                          label: "Avg BPM",
+                          icon: Ionicons.eye_outline),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Text(
+                    'Durasi Kedipan Per Menit',
+                    style: textTheme.titleMedium!.apply(
+                        color: colorScheme.onBackground, fontWeightDelta: 2),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    // width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height / 4,
+                    child: SfCartesianChart(
+                        legend: const Legend(
+                          isVisible: true,
+                          textStyle: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                        tooltipBehavior: TooltipBehavior(
+                            enable: true,
+                            header: "Durasi Kedipan",
+                            format: 'point.y Detik'),
+                        primaryXAxis: const CategoryAxis(
+                          isVisible: true,
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        primaryYAxis: const NumericAxis(
+                          isVisible: true,
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 12),
+                        ),
+                        series: <CartesianSeries<dynamic, String>>[
+                          AreaSeries<ReportDataModel, String>(
+                            // color: colorScheme.surfaceVariant,
+                            name: 'Durasi Kedipan',
+                            animationDuration: 500,
+                            borderWidth: 2,
+                            borderColor: colorScheme.surfaceVariant,
+                            color: colorScheme.surfaceVariant.withOpacity(0.3),
+                            dataSource: reports.reportData ?? [],
+                            xValueMapper: (ReportDataModel data, _) =>
+                                convertDateTimeToMinute(data.createdAt!),
+                            yValueMapper: (ReportDataModel data, _) =>
+                                data.highestBlinkDuration! / 100 ?? 0,
+                          ),
+                          AreaSeries<PredictFinalModel, String>(
+                            // color: colorScheme.surfaceVariant,
+                            name: 'Prediksi',
+                            animationDuration: 500,
+                            borderWidth: 2,
+                            borderColor: Colors.orange,
+                            color: Colors.orange.withOpacity(0.3),
+                            dataSource: predictBdFinal ?? [],
+                            xValueMapper: (PredictFinalModel data, _) =>
+                                convertDateTimeToMinute(data.predictTime),
+                            yValueMapper: (PredictFinalModel data, _) =>
+                                data.predictValue / 100 ?? 0,
+                          ),
+                          // add average bpm
+
+                          LineSeries<ReportDataModel, String>(
+                            color: colorScheme.primary,
+                            enableTooltip: true,
+                            name: 'Durasi Kedipan Mata Normal',
+                            dataSource: [
+                              ...reports.reportData!,
+                              ...predictFinals
+                                  .map((prediction) => ReportDataModel(
+                                        createdAt: prediction.predictTime,
+                                        blinkCount:
+                                            prediction.predictValue.toInt(),
+                                      )),
+                            ],
+                            xValueMapper: (ReportDataModel data, _) =>
+                                convertDateTimeToMinute(data.createdAt!),
+                            yValueMapper: (ReportDataModel data, _) => 1,
+                          ),
+                        ]),
+                  ),
+                  Row(
+                    children: [
+                      _buildItemResult(context,
+                          itemIndex: "${reports.avgBPMValue} BPM",
+                          label: "Avg BPM",
                           icon: Ionicons.eye_outline),
                     ],
                   )

@@ -20,19 +20,27 @@ class LoadingPredictionState extends PredictionState {
 
 class LoadedPredictionState extends PredictionState {
   final List<PredictFinalModel> predictFinal;
+  final List<PredictFinalModel> predictBPMFinal;
+  final List<PredictFinalModel> predictBdFinal;
   final double healthyScore;
+  final double healthyScoreBPM;
   final String title, description;
   final Color color;
   final int kpmThreshold;
+  final int bpmThreshold;
   LoadedPredictionState(
       {required ReportModel report,
       required PredictResponse predictResponse,
       required this.healthyScore,
+      required this.healthyScoreBPM,
+      required this.predictBPMFinal,
+      required this.predictBdFinal,
       required this.title,
       required this.description,
       required this.color,
       required this.predictFinal,
-      required this.kpmThreshold})
+      required this.kpmThreshold,
+      required this.bpmThreshold})
       : super(report: report, predictResponse: predictResponse);
 }
 

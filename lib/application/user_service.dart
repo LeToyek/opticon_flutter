@@ -5,7 +5,7 @@ abstract class UserServiceImpl {
   Future<User?> loginUser({required String email, required String password});
   Future<User?> loginWithGoogle();
   Future<User?> registerUser();
-  Future<User?> logoutUser();
+  Future<void> logoutUser();
   Future<User?> getCurrentUser();
 }
 
@@ -30,7 +30,8 @@ class UserService {
   }
 
   Future<User?> logoutUser() async {
-    return await _userRepository.logoutUser();
+    await _userRepository.logoutUser();
+    return null;
   }
 
   Future<User?> getCurrentUser() async {
