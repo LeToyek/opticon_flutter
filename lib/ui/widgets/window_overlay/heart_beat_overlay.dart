@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_controller.dart';
 import 'package:opticon_flutter/ui/controller/blink_controller/blink_state.dart';
-import 'package:opticon_flutter/ui/controller/bluetooth_controller/bluetooth_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_controller.dart';
 import 'package:opticon_flutter/ui/controller/heart_beat_controller/heart_beat_state.dart';
 
@@ -22,6 +23,22 @@ class HeartBeatOverlay extends ConsumerStatefulWidget {
 
 class _HeartBeatOverlayState extends ConsumerState<HeartBeatOverlay> {
   OverlayModuleState _overlayModuleState = OverlayModuleState.heartBeat;
+  StreamSubscription? _overlayListener;
+
+  int kpm = 0;
+  int bpm = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _overlayListener = FlutterOverlayWindow.overlayListener.listen((event) {
+      setState(() {
+        kpm = int.parse(event[0]);
+        bpm = int.parse(event[1]);
+      });
+    });
+  }
 
   Color getColor(context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -108,18 +125,16 @@ class _HeartBeatOverlayState extends ConsumerState<HeartBeatOverlay> {
   }
 
   Widget buildText() {
-    final btState =
-        ref.watch(bluetoothControllerProvider.select((value) => value.btData));
     if (_overlayModuleState == OverlayModuleState.blink) {
       return Text(
-        "${btState?.blinkCount} KPM",
+        "$kpm KPM",
         style: const TextStyle(
             color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
       );
     }
 
     return Text(
-      "${btState?.ppgValue} BPM",
+      "$bpm BPM",
       style: const TextStyle(
           color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
     );

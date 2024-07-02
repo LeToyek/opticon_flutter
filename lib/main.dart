@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:opticon_flutter/bootstrap.dart';
 import 'package:opticon_flutter/domain/routes/routes.dart';
 import 'package:opticon_flutter/firebase_options.dart';
-import 'package:opticon_flutter/ui/pages/auth_page/auth_page.dart';
+import 'package:opticon_flutter/ui/pages/splash_page/splash_page.dart';
 import 'package:opticon_flutter/ui/theme/theme.dart';
 import 'package:opticon_flutter/ui/widgets/window_overlay/heart_beat_overlay.dart';
 
@@ -25,7 +25,7 @@ class MainApp extends ConsumerWidget {
       theme: lightTheme,
       themeMode: ThemeMode.light,
       routes: routes,
-      initialRoute: AuthPage.routePath,
+      initialRoute: SplashPage.routePath,
     );
   }
 }

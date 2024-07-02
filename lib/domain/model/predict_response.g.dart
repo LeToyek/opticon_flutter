@@ -18,6 +18,12 @@ _$PredictResponseImpl _$$PredictResponseImplFromJson(
       predicitonsBd: (json['predictions_blink_duration'] as List<dynamic>?)
           ?.map((e) => (e as num).toInt())
           .toList(),
+      accuracyBlinkCount: (json['accuracy_blink_count'] as num?)?.toDouble(),
+      accuracyHighestBlinkDuration:
+          (json['accuracy_highest_blink_duration'] as num?)?.toDouble(),
+      accuracyBpm: (json['accuracy_bpm'] as num?)?.toDouble(),
+      mse: (json['mse'] as num?)?.toDouble(),
+      mae: (json['mae'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$$PredictResponseImplToJson(
@@ -26,4 +32,9 @@ Map<String, dynamic> _$$PredictResponseImplToJson(
       'predictions': instance.predicitons,
       'predictions_bpm': instance.predicitonsBpm,
       'predictions_blink_duration': instance.predicitonsBd,
+      'accuracy_blink_count': instance.accuracyBlinkCount,
+      'accuracy_highest_blink_duration': instance.accuracyHighestBlinkDuration,
+      'accuracy_bpm': instance.accuracyBpm,
+      'mse': instance.mse,
+      'mae': instance.mae,
     };

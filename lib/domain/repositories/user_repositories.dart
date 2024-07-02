@@ -6,7 +6,7 @@ abstract class UserRepositoryImpl {
   Future<User?> loginUser({required String email, required String password});
   Future<User?> loginWithGoogle();
   Future<User?> registerUser();
-  Future<User?> logoutUser();
+  Future<void> logoutUser();
   Future<User?> getCurrentUser();
 }
 
@@ -52,9 +52,12 @@ class UserRepository implements UserRepositoryImpl {
   }
 
   @override
-  Future<User?> logoutUser() {
-    // TODO: implement logoutUser
-    throw UnimplementedError();
+  Future<void> logoutUser() async {
+    try {
+      return await _firebaseAuth.signOut();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
   }
 
   @override

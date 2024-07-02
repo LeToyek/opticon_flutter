@@ -1,41 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GuidancePage extends ConsumerWidget {
-  GuidancePage({super.key});
+class GuidanceHealthPage extends ConsumerWidget {
+  GuidanceHealthPage({super.key});
 
-  static const String routePath = "/guidance";
+  static const String routePath = "/guidance/health";
 
   final List<Map<String, String>> guidance = [
     {
-      "imageUrl": "assets/glasses.png",
-      "title": "Pakai Kacamata",
+      "imageUrl": "assets/clock.png",
+      "title": "Berhenti Sejenak",
       "description":
-          "Pakai kacamata dengan senyaman mungkin agar tidak terganggu saat berkendara"
+          "Jika anda merasa lelah, sebaiknya berhenti sejenak untuk beristirahat"
     },
     {
-      "imageUrl": "assets/btn_i.png",
-      "title": "Aktifkan Saklar",
+      "imageUrl": "assets/sandclock.png",
+      "title": "Atur Waktu Berkendara",
       "description":
-          "Geser saklar ke bawah untuk menyalakan alat dan geser ke atas untuk mematikan alat"
-    },
-    {
-      "imageUrl": "assets/bluetooth.png",
-      "title": "Hubungkan Alat",
-      "description":
-          "Hubungkan alat dengan menuju menu bluetooth dan pilih nama opticon"
-    },
-    {
-      "imageUrl": "assets/map.png",
-      "title": "Tampilan Ganda",
-      "description":
-          "Anda bisa melihat data sambil membuka aplikasi lainnya seperti maps"
-    },
-    {
-      "imageUrl": "assets/eye.png",
-      "title": "Mata Mengantuk",
-      "description":
-          "Jika mata anda mengantuk, buzzer akan berbunyi. Sebaiknya anda berhenti sejenak untuk beristirahat"
+          "Jangan memaksakan berkendara dengan waktu yang lama, gunakan fitur prediksi keamanan untuk mengetahui waktu berkendara yang aman"
     },
   ];
 
@@ -48,7 +30,7 @@ class GuidancePage extends ConsumerWidget {
         centerTitle: true,
         foregroundColor: Colors.white,
         title: const Text(
-          'Panduan Pakai',
+          'Panduan Aman',
         ),
       ),
       body: Padding(

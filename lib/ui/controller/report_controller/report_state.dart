@@ -15,7 +15,15 @@ class LoadingReportState extends ReportState {
 }
 
 class LoadedReportState extends ReportState {
-  LoadedReportState({required ReportModel report}) : super(report: report);
+  String startHours;
+  String endHours;
+  String walkingHours;
+  LoadedReportState(
+      {required ReportModel report,
+      required this.walkingHours,
+      required this.startHours,
+      required this.endHours})
+      : super(report: report);
 }
 
 class ErrorReportState extends ReportState {

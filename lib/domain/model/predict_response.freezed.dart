@@ -27,6 +27,17 @@ mixin _$PredictResponse {
   List<int>? get predicitonsBpm => throw _privateConstructorUsedError;
   @JsonKey(name: 'predictions_blink_duration')
   List<int>? get predicitonsBd => throw _privateConstructorUsedError;
+  @JsonKey(name: 'accuracy_blink_count')
+  double? get accuracyBlinkCount => throw _privateConstructorUsedError;
+  @JsonKey(name: 'accuracy_highest_blink_duration')
+  double? get accuracyHighestBlinkDuration =>
+      throw _privateConstructorUsedError;
+  @JsonKey(name: 'accuracy_bpm')
+  double? get accuracyBpm => throw _privateConstructorUsedError;
+  @JsonKey(name: 'mse')
+  double? get mse => throw _privateConstructorUsedError;
+  @JsonKey(name: 'mae')
+  double? get mae => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -43,7 +54,13 @@ abstract class $PredictResponseCopyWith<$Res> {
   $Res call(
       {@JsonKey(name: 'predictions') List<int>? predicitons,
       @JsonKey(name: 'predictions_bpm') List<int>? predicitonsBpm,
-      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd});
+      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd,
+      @JsonKey(name: 'accuracy_blink_count') double? accuracyBlinkCount,
+      @JsonKey(name: 'accuracy_highest_blink_duration')
+      double? accuracyHighestBlinkDuration,
+      @JsonKey(name: 'accuracy_bpm') double? accuracyBpm,
+      @JsonKey(name: 'mse') double? mse,
+      @JsonKey(name: 'mae') double? mae});
 }
 
 /// @nodoc
@@ -62,6 +79,11 @@ class _$PredictResponseCopyWithImpl<$Res, $Val extends PredictResponse>
     Object? predicitons = freezed,
     Object? predicitonsBpm = freezed,
     Object? predicitonsBd = freezed,
+    Object? accuracyBlinkCount = freezed,
+    Object? accuracyHighestBlinkDuration = freezed,
+    Object? accuracyBpm = freezed,
+    Object? mse = freezed,
+    Object? mae = freezed,
   }) {
     return _then(_value.copyWith(
       predicitons: freezed == predicitons
@@ -76,6 +98,26 @@ class _$PredictResponseCopyWithImpl<$Res, $Val extends PredictResponse>
           ? _value.predicitonsBd
           : predicitonsBd // ignore: cast_nullable_to_non_nullable
               as List<int>?,
+      accuracyBlinkCount: freezed == accuracyBlinkCount
+          ? _value.accuracyBlinkCount
+          : accuracyBlinkCount // ignore: cast_nullable_to_non_nullable
+              as double?,
+      accuracyHighestBlinkDuration: freezed == accuracyHighestBlinkDuration
+          ? _value.accuracyHighestBlinkDuration
+          : accuracyHighestBlinkDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
+      accuracyBpm: freezed == accuracyBpm
+          ? _value.accuracyBpm
+          : accuracyBpm // ignore: cast_nullable_to_non_nullable
+              as double?,
+      mse: freezed == mse
+          ? _value.mse
+          : mse // ignore: cast_nullable_to_non_nullable
+              as double?,
+      mae: freezed == mae
+          ? _value.mae
+          : mae // ignore: cast_nullable_to_non_nullable
+              as double?,
     ) as $Val);
   }
 }
@@ -91,7 +133,13 @@ abstract class _$$PredictResponseImplCopyWith<$Res>
   $Res call(
       {@JsonKey(name: 'predictions') List<int>? predicitons,
       @JsonKey(name: 'predictions_bpm') List<int>? predicitonsBpm,
-      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd});
+      @JsonKey(name: 'predictions_blink_duration') List<int>? predicitonsBd,
+      @JsonKey(name: 'accuracy_blink_count') double? accuracyBlinkCount,
+      @JsonKey(name: 'accuracy_highest_blink_duration')
+      double? accuracyHighestBlinkDuration,
+      @JsonKey(name: 'accuracy_bpm') double? accuracyBpm,
+      @JsonKey(name: 'mse') double? mse,
+      @JsonKey(name: 'mae') double? mae});
 }
 
 /// @nodoc
@@ -108,6 +156,11 @@ class __$$PredictResponseImplCopyWithImpl<$Res>
     Object? predicitons = freezed,
     Object? predicitonsBpm = freezed,
     Object? predicitonsBd = freezed,
+    Object? accuracyBlinkCount = freezed,
+    Object? accuracyHighestBlinkDuration = freezed,
+    Object? accuracyBpm = freezed,
+    Object? mse = freezed,
+    Object? mae = freezed,
   }) {
     return _then(_$PredictResponseImpl(
       predicitons: freezed == predicitons
@@ -122,6 +175,26 @@ class __$$PredictResponseImplCopyWithImpl<$Res>
           ? _value._predicitonsBd
           : predicitonsBd // ignore: cast_nullable_to_non_nullable
               as List<int>?,
+      accuracyBlinkCount: freezed == accuracyBlinkCount
+          ? _value.accuracyBlinkCount
+          : accuracyBlinkCount // ignore: cast_nullable_to_non_nullable
+              as double?,
+      accuracyHighestBlinkDuration: freezed == accuracyHighestBlinkDuration
+          ? _value.accuracyHighestBlinkDuration
+          : accuracyHighestBlinkDuration // ignore: cast_nullable_to_non_nullable
+              as double?,
+      accuracyBpm: freezed == accuracyBpm
+          ? _value.accuracyBpm
+          : accuracyBpm // ignore: cast_nullable_to_non_nullable
+              as double?,
+      mse: freezed == mse
+          ? _value.mse
+          : mse // ignore: cast_nullable_to_non_nullable
+              as double?,
+      mae: freezed == mae
+          ? _value.mae
+          : mae // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -133,7 +206,13 @@ class _$PredictResponseImpl implements _PredictResponse {
       {@JsonKey(name: 'predictions') final List<int>? predicitons,
       @JsonKey(name: 'predictions_bpm') final List<int>? predicitonsBpm,
       @JsonKey(name: 'predictions_blink_duration')
-      final List<int>? predicitonsBd})
+      final List<int>? predicitonsBd,
+      @JsonKey(name: 'accuracy_blink_count') this.accuracyBlinkCount,
+      @JsonKey(name: 'accuracy_highest_blink_duration')
+      this.accuracyHighestBlinkDuration,
+      @JsonKey(name: 'accuracy_bpm') this.accuracyBpm,
+      @JsonKey(name: 'mse') this.mse,
+      @JsonKey(name: 'mae') this.mae})
       : _predicitons = predicitons,
         _predicitonsBpm = predicitonsBpm,
         _predicitonsBd = predicitonsBd;
@@ -177,8 +256,24 @@ class _$PredictResponseImpl implements _PredictResponse {
   }
 
   @override
+  @JsonKey(name: 'accuracy_blink_count')
+  final double? accuracyBlinkCount;
+  @override
+  @JsonKey(name: 'accuracy_highest_blink_duration')
+  final double? accuracyHighestBlinkDuration;
+  @override
+  @JsonKey(name: 'accuracy_bpm')
+  final double? accuracyBpm;
+  @override
+  @JsonKey(name: 'mse')
+  final double? mse;
+  @override
+  @JsonKey(name: 'mae')
+  final double? mae;
+
+  @override
   String toString() {
-    return 'PredictResponse(predicitons: $predicitons, predicitonsBpm: $predicitonsBpm, predicitonsBd: $predicitonsBd)';
+    return 'PredictResponse(predicitons: $predicitons, predicitonsBpm: $predicitonsBpm, predicitonsBd: $predicitonsBd, accuracyBlinkCount: $accuracyBlinkCount, accuracyHighestBlinkDuration: $accuracyHighestBlinkDuration, accuracyBpm: $accuracyBpm, mse: $mse, mae: $mae)';
   }
 
   @override
@@ -191,7 +286,17 @@ class _$PredictResponseImpl implements _PredictResponse {
             const DeepCollectionEquality()
                 .equals(other._predicitonsBpm, _predicitonsBpm) &&
             const DeepCollectionEquality()
-                .equals(other._predicitonsBd, _predicitonsBd));
+                .equals(other._predicitonsBd, _predicitonsBd) &&
+            (identical(other.accuracyBlinkCount, accuracyBlinkCount) ||
+                other.accuracyBlinkCount == accuracyBlinkCount) &&
+            (identical(other.accuracyHighestBlinkDuration,
+                    accuracyHighestBlinkDuration) ||
+                other.accuracyHighestBlinkDuration ==
+                    accuracyHighestBlinkDuration) &&
+            (identical(other.accuracyBpm, accuracyBpm) ||
+                other.accuracyBpm == accuracyBpm) &&
+            (identical(other.mse, mse) || other.mse == mse) &&
+            (identical(other.mae, mae) || other.mae == mae));
   }
 
   @JsonKey(ignore: true)
@@ -200,7 +305,12 @@ class _$PredictResponseImpl implements _PredictResponse {
       runtimeType,
       const DeepCollectionEquality().hash(_predicitons),
       const DeepCollectionEquality().hash(_predicitonsBpm),
-      const DeepCollectionEquality().hash(_predicitonsBd));
+      const DeepCollectionEquality().hash(_predicitonsBd),
+      accuracyBlinkCount,
+      accuracyHighestBlinkDuration,
+      accuracyBpm,
+      mse,
+      mae);
 
   @JsonKey(ignore: true)
   @override
@@ -222,7 +332,13 @@ abstract class _PredictResponse implements PredictResponse {
       {@JsonKey(name: 'predictions') final List<int>? predicitons,
       @JsonKey(name: 'predictions_bpm') final List<int>? predicitonsBpm,
       @JsonKey(name: 'predictions_blink_duration')
-      final List<int>? predicitonsBd}) = _$PredictResponseImpl;
+      final List<int>? predicitonsBd,
+      @JsonKey(name: 'accuracy_blink_count') final double? accuracyBlinkCount,
+      @JsonKey(name: 'accuracy_highest_blink_duration')
+      final double? accuracyHighestBlinkDuration,
+      @JsonKey(name: 'accuracy_bpm') final double? accuracyBpm,
+      @JsonKey(name: 'mse') final double? mse,
+      @JsonKey(name: 'mae') final double? mae}) = _$PredictResponseImpl;
 
   factory _PredictResponse.fromJson(Map<String, dynamic> json) =
       _$PredictResponseImpl.fromJson;
@@ -236,6 +352,21 @@ abstract class _PredictResponse implements PredictResponse {
   @override
   @JsonKey(name: 'predictions_blink_duration')
   List<int>? get predicitonsBd;
+  @override
+  @JsonKey(name: 'accuracy_blink_count')
+  double? get accuracyBlinkCount;
+  @override
+  @JsonKey(name: 'accuracy_highest_blink_duration')
+  double? get accuracyHighestBlinkDuration;
+  @override
+  @JsonKey(name: 'accuracy_bpm')
+  double? get accuracyBpm;
+  @override
+  @JsonKey(name: 'mse')
+  double? get mse;
+  @override
+  @JsonKey(name: 'mae')
+  double? get mae;
   @override
   @JsonKey(ignore: true)
   _$$PredictResponseImplCopyWith<_$PredictResponseImpl> get copyWith =>

@@ -17,7 +17,7 @@ class PredictionController extends _$PredictionController {
   @override
   PredictionState build() {
     fetchPrediction();
-    return InitialPredictionState();
+    return LoadingPredictionState();
   }
 
   void fetchPrediction() async {
@@ -26,7 +26,11 @@ class PredictionController extends _$PredictionController {
       final reports = await _reportService.getReportDays();
       final predicts = await _service.getPredictionData(reports.reportData!);
       int healthyCounter = 0;
+      int bpmHealthyCounter = 0;
+      int bpmThreshold = 0;
       List<PredictFinalModel> predictFinals = [];
+      List<PredictFinalModel> predictFinalBPM = [];
+      List<PredictFinalModel> predictFinalBd = [];
       if (reports.reportData != null &&
           reports.reportData!.isNotEmpty &&
           predicts.predicitons!.isNotEmpty) {
@@ -38,22 +42,40 @@ class PredictionController extends _$PredictionController {
           predictFinals.add(PredictFinalModel(
               predictValue: predicts.predicitons![i],
               predictTime: predictionTimestamp));
+          predictFinalBPM.add(PredictFinalModel(
+              predictValue: predicts.predicitonsBpm![i],
+              predictTime: predictionTimestamp));
+          predictFinalBd.add(PredictFinalModel(
+              predictValue: predicts.predicitonsBd![i],
+              predictTime: predictionTimestamp));
 
           if (predicts.predicitons![i] > kpmThreshold) {
             healthyCounter++;
           }
+
+          int avgBPMFinal = predictFinalBPM
+                  .map((e) => e.predictValue)
+                  .reduce((value, element) => value + element) ~/
+              predictFinalBPM.length;
+          bpmThreshold = avgBPMFinal - 8;
         }
       }
       final message = getMessage(healthyCounter / predicts.predicitons!.length);
+
       state = LoadedPredictionState(
-          color: message['color'],
-          description: message['description'],
-          title: message['title'],
-          report: reports,
-          predictResponse: predicts,
-          healthyScore: healthyCounter / predicts.predicitons!.length,
-          predictFinal: predictFinals,
-          kpmThreshold: kpmThreshold);
+        color: message['color'],
+        description: message['description'],
+        title: message['title'],
+        report: reports,
+        predictResponse: predicts,
+        healthyScore: healthyCounter / predicts.predicitons!.length,
+        predictFinal: predictFinals,
+        kpmThreshold: kpmThreshold,
+        healthyScoreBPM: bpmHealthyCounter / predicts.predicitons!.length,
+        predictBPMFinal: predictFinalBPM,
+        predictBdFinal: predictFinalBd,
+        bpmThreshold: bpmThreshold,
+      );
     } catch (e) {
       state = ErrorPredictionState(
         message: e.toString(),

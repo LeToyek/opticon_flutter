@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:opticon_flutter/application/report_service.dart';
 import 'package:opticon_flutter/application/services.dart';
 import 'package:opticon_flutter/datasources/datasources.dart';
@@ -39,11 +40,11 @@ class BluetoothController extends _$BluetoothController {
     state = state.copyWith(bluetoothDevice: device);
   }
 
-  void sendOnMessageToBluetooth() async {
+  void refreshKpm() async {
     Uint8List data = utf8.encode("1" "\r\n");
     state.connection?.output.add(data);
-    await state.connection?.output.allSent;
-    state = state.copyWith(message: 'Device Turned On', deviceState: 1);
+    // await state.connection?.output.allSent;
+    // state = state.copyWith(message: 'Device Turned On', deviceState: 1);
   }
 
   // Method to send message,
@@ -176,6 +177,18 @@ class BluetoothController extends _$BluetoothController {
         print("BPM: ${receivedData[2]}");
         print("BLINK DURATION: ${receivedData[3]}");
 
+        int convertedBPM = 120;
+        if (int.parse(receivedData[2]) < 800 &&
+            int.parse(receivedData[2]) > 400) {
+          convertedBPM = 60 * 1000 ~/ int.parse(receivedData[2]);
+        }
+
+        print("SENDING DATA TO FLUTTER OVERLAY WINDOW");
+        await FlutterOverlayWindow.shareData([
+          receivedData[1],
+          convertedBPM.toString(),
+        ]);
+
         final now = DateTime.now();
         final minute = now.minute;
 
@@ -186,18 +199,8 @@ class BluetoothController extends _$BluetoothController {
 
         print("PREV KPM: ${state.prevKPM}");
 
-        if (state.prevKPM == null) {
-          state = state.copyWith(blinkCount: kpm);
-        }
+        state = state.copyWith(blinkCount: kpm);
 
-        if (state.prevKPM != null) {
-          if (kpm < state.prevKPM!) {
-            state = state.copyWith(
-                prevKPM: kpm, blinkCount: state.blinkCount + kpm);
-          } else {
-            state = state.copyWith(blinkCount: kpm - state.prevKPM!);
-          }
-        }
         if (minute != state.minutePast && state.blinkCount > 0) {
           try {
             print(" MINUTE $minute | PAST MINUTE ${state.minutePast}");
@@ -206,10 +209,11 @@ class BluetoothController extends _$BluetoothController {
             await _reportService.postReportData(ReportDataModel(
               blinkCount: state.blinkCount,
               highestBlinkDuration: state.highestBlinkDuration,
-              bpmValue: int.tryParse(receivedData[2])!,
+              bpmValue: convertedBPM,
               userId: _auth.currentUser!.uid,
               createdAt: Timestamp.now(),
             ));
+            refreshKpm();
             state = state.copyWith(
                 minutePast: minute,
                 blinkCount: 0,
@@ -238,7 +242,7 @@ class BluetoothController extends _$BluetoothController {
           battery: receivedData[0],
           blinkDuration: receivedData[1],
           blinkCount: state.blinkCount.toString(),
-          ppgValue: receivedData[2],
+          ppgValue: convertedBPM.toString(),
         );
       }
     }

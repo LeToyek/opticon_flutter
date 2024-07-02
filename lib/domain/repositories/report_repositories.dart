@@ -50,7 +50,7 @@ class ReportRepository implements ReportRepositoryImpl {
     try {
       final now = DateTime.now();
 
-      DateTime startOfDay = DateTime(now.year, now.month, now.day, 0, 0, 0);
+      DateTime startOfDay = DateTime(now.year, now.month, now.day - 2, 0, 0, 0);
       DateTime endOfDay = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
       // Convert to Timestamps
@@ -73,17 +73,20 @@ class ReportRepository implements ReportRepositoryImpl {
         // Extract bpm_values and calculate the average
         final List<double> blinkCounts =
             data.map((report) => report.blinkCount!.toDouble()).toList();
-        print("SUCCESS 1");
         final double avgBlPM =
             blinkCounts.reduce((a, b) => a + b) / blinkCounts.length;
-        print("SUCCESS 2");
         final int highestBlinkDuration = data
             .map((report) => report.highestBlinkDuration!)
             .reduce((a, b) => a > b ? a : b);
-        print("SUCCESS 3");
+
+        final List<double> bpmValues =
+            data.map((report) => report.bpmValue!.toDouble()).toList();
+        final double avgBPM =
+            bpmValues.reduce((a, b) => a + b) / bpmValues.length;
 
         return ReportResponse(
             avgBlPM: avgBlPM,
+            avgBPM: avgBPM,
             reports: data,
             highestBlinkDuration: highestBlinkDuration);
       }
@@ -97,11 +100,13 @@ class ReportRepository implements ReportRepositoryImpl {
 
 class ReportResponse {
   final double avgBlPM;
+  final double avgBPM;
   final int highestBlinkDuration;
   final List<ReportDataModel> reports;
 
   ReportResponse({
     required this.avgBlPM,
+    required this.avgBPM,
     required this.reports,
     required this.highestBlinkDuration,
   });
