@@ -59,10 +59,10 @@ class ReportRepository implements ReportRepositoryImpl {
       final res = await _firestore
           .collection('reports')
           .where('user_id', isEqualTo: _auth.currentUser!.uid)
-          .where('createdAt', isGreaterThanOrEqualTo: startTimestamp)
-          .where('createdAt', isLessThanOrEqualTo: endTimestamp)
           .orderBy('createdAt')
           .get();
+      // .where('createdAt', isGreaterThanOrEqualTo: startTimestamp)
+      // .where('createdAt', isLessThanOrEqualTo: endTimestamp)
 
       print('res: ${res.docs}');
       if (res.docs.isNotEmpty) {

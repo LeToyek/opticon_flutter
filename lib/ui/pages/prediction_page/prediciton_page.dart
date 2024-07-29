@@ -74,6 +74,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
           color: final colorTitle,
           description: final description,
           kpmThreshold: final kpmThreshold,
+          healthyFinalScore: final healthyFinalScore,
         ) =>
           SingleChildScrollView(
             child: Padding(
@@ -96,7 +97,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                         radius: 100,
 
                         /// Gauge value.
-                        value: 100 - (healthyScore * 100),
+                        value: 100 - (healthyFinalScore * 100),
                         axis: GaugeAxis(
                           min: 0,
                           max: 100,
@@ -359,7 +360,7 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                       _buildItemResult(context,
                           itemIndex: "${reports.avgBPMValue} BPM",
                           label: "Avg BPM",
-                          icon: Ionicons.eye_outline),
+                          icon: Ionicons.heart_outline),
                     ],
                   ),
                   const SizedBox(
@@ -447,9 +448,9 @@ class _PredictionPageState extends ConsumerState<PredictionPage> {
                   Row(
                     children: [
                       _buildItemResult(context,
-                          itemIndex: "${reports.avgBPMValue} BPM",
-                          label: "Avg BPM",
-                          icon: Ionicons.eye_outline),
+                          itemIndex: "0.8 Detik",
+                          label: "Blink Duration Threshold",
+                          icon: Ionicons.eye),
                     ],
                   )
                 ],

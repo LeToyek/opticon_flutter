@@ -27,6 +27,7 @@ class PredictionController extends _$PredictionController {
       final predicts = await _service.getPredictionData(reports.reportData!);
       int healthyCounter = 0;
       int bpmHealthyCounter = 0;
+      int bdHealthyCounter = 0;
       int bpmThreshold = 0;
       List<PredictFinalModel> predictFinals = [];
       List<PredictFinalModel> predictFinalBPM = [];
@@ -58,9 +59,19 @@ class PredictionController extends _$PredictionController {
                   .reduce((value, element) => value + element) ~/
               predictFinalBPM.length;
           bpmThreshold = avgBPMFinal - 8;
+
+          if (predicts.predicitonsBpm![i] > bpmThreshold) {
+            bpmHealthyCounter++;
+          }
+          if (predicts.predicitonsBd![i] / 100 <= 0.8) {
+            bdHealthyCounter++;
+          }
         }
       }
-      final message = getMessage(healthyCounter / predicts.predicitons!.length);
+      final healthScoreFinal =
+          (healthyCounter + bpmHealthyCounter + bdHealthyCounter) /
+              (predicts.predicitons!.length * 3);
+      final message = getMessage(healthScoreFinal);
 
       state = LoadedPredictionState(
         color: message['color'],
@@ -75,6 +86,7 @@ class PredictionController extends _$PredictionController {
         predictBPMFinal: predictFinalBPM,
         predictBdFinal: predictFinalBd,
         bpmThreshold: bpmThreshold,
+        healthyFinalScore: healthScoreFinal,
       );
     } catch (e) {
       state = ErrorPredictionState(

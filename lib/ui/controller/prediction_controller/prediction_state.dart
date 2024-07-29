@@ -28,6 +28,7 @@ class LoadedPredictionState extends PredictionState {
   final Color color;
   final int kpmThreshold;
   final int bpmThreshold;
+  final double healthyFinalScore;
   LoadedPredictionState(
       {required ReportModel report,
       required PredictResponse predictResponse,
@@ -38,6 +39,7 @@ class LoadedPredictionState extends PredictionState {
       required this.title,
       required this.description,
       required this.color,
+      required this.healthyFinalScore,
       required this.predictFinal,
       required this.kpmThreshold,
       required this.bpmThreshold})

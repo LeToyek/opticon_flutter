@@ -21,6 +21,8 @@ class MainApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final routes = ref.read(routesProvider);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
       title: 'Flutter Demo',
       theme: lightTheme,
       themeMode: ThemeMode.light,
